@@ -1,3 +1,5 @@
+module SimpleSolver where
+
 import Data.Char
 import Data.List
 import Data.Maybe
@@ -18,8 +20,11 @@ exampleSudoku =
 mapTakenCellCount :: Sudoku -> [Int]
 mapTakenCellCount rs  = map (\r -> length $ filter isDigit r) rs
 
-findFullestRow :: Sudoku -> Int
-findFullestRow rs  = let x = mapTakenCellCount rs in fromJust $ elemIndex (maximum x) x
+findFullestRowIndex :: Sudoku -> Int
+findFullestRowIndex rs  = let x = mapTakenCellCount rs in fromJust $ elemIndex (maximum x) x
+
+findFullestRow :: Sudoku -> [Char]
+findFullestRow rs = rs !! (findFullestRowIndex rs)
 
 findMissingNumbers :: [Char] -> [Char]
 findMissingNumbers rs = filter (\x -> not $ elem x rs) "123456789"
@@ -34,4 +39,9 @@ isValid :: Sudoku -> Int -> Int -> Char -> Bool
 isValid rs i j d  = not (isTaken rs i j) &&
                     not (isRowTaken rs i d) &&
                     not (isRowTaken (transpose rs) j d)
+
+
+--n = map (\x -> map (\y -> ) ) $ findMissingNumbers $ findFullestRow exampleSudoku
+
+--mapEmptyCells :: Sudoku -> (a -> a) :: 
 
