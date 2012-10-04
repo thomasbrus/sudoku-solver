@@ -27,5 +27,16 @@ isAllowed rs i j s  = not (isTaken rs i j) &&
                       not (isInBlock rs i j s)
 
 findCandidates :: Sudoku -> Int -> Int -> [Char]
-findCandidates rs i j = filter ((isAllowed) rs i j) "123456789"
+findCandidates rs i j | isTaken rs i j  = ""
+                      | otherwise       = filter ((isAllowed) rs i j) "123456789"
+
+mapWithIndeces :: Sudoku -> (Sudoku -> Int -> Int -> b) -> [[b]]
+mapWithIndeces rs f = let (rows, columns) = (rowCount rs, columnCount rs) in
+                      map (\i -> (map (\j -> f rs i j) [0..(columns - 1)])) [0..(rows - 1)]
+
+toCandidatesMap :: Sudoku -> [[(Char, String)]]
+toCandidatesMap rs = mapWithIndeces rs (\rs i j -> (rs !! i !! j, findCandidates rs i j))
+
+
+
 

@@ -5,33 +5,38 @@ import Data.List
 import Sudoku
 import Sudoku.Strategy
 
-exampleSudoku =
-  [ "4.....938"
-  , ".32.941.."
-  , ".953..24."
-  , "37.6.9..4"
-  , "529..1673"
-  , "6.47.3.9."
-  , "957..83.."
-  , "..39..4.."
-  , "24..3.7.9" ]
+type Candidates = [(Int, Int, String)]
 
 haveUnitInCommon :: Sudoku -> (Int, Int) -> (Int, Int) -> Bool
 haveUnitInCommon rs (i, j) (i', j') = i == i' || j == j' || findBlock rs i j == findBlock rs i' j'
 
---findNakedPairs :: Sudoku -> [[(Int, Int, String)]]
---findNakedPairs rs = let css = filterCandidates rs ((==) 2) in
---                    groupBy (\(i, j, cs) (i', j', cs') -> cs == cs') css
+nakedPairs :: Sudoku -> Candidates
+nakedPairs rs  = concat $ filter (\x -> length x == 2) css
+    where
+      f (i, j, cs)                = length cs == 2
+      s (_, _, c) (_, _, c')      = compare c c'
+      g (i, j, cs) (i', j', cs')  = cs == cs' && haveUnitInCommon rs (i, j) (i', j')
+      css = groupBy g $ sortBy s $ filter f $ allCandidates rs
 
-collectNakedPairs :: Sudoku -> [[(Int, Int, String)]]
-collectNakedPairs rs  = css''
-                      where
-                        f (i,j,cs)              = length cs == 2
-                        s (_,_,c) (_,_,c')      = compare c c'
-                        g (i,j,cs) (i',j',cs')  = cs == cs' && haveUnitInCommon rs (i, j) (i', j')
-                        css                     = filter f $ collectCandidates rs
-                        css'                    = sortBy s css
-                        css''                   = groupBy g css'
+candidatePairs :: Sudoku -> Candidates
+candidatePairs rs = filter (\(i, j, cs) -> length cs == 2) $ allCandidates rs
 
-collectCandidates :: Sudoku -> [(Int, Int, String)]
-collectCandidates rs  = [ (i, j, findCandidates rs i j) | i<-[0..8], j<-[0..8] ]
+allCandidates :: Sudoku -> Candidates
+allCandidates rs  = [ (i, j, findCandidates rs i j) | i<-[0..8], j<-[0..8] ]
+
+--findApplicableNakedPairs :: Sudoku -> Int -> Int -> [Candidates]
+--findApplicableNakedPairs rs i j = filter (\) collectCandidates rs
+
+resolveCandidates :: Sudoku -> Int -> Int -> (Char, String)
+resolveCandidates rs i j  = (rs !! i !! j, cs \\ es)
+                          where
+                            cs = findCandidates rs i j
+                            es = "1"
+
+resolveAllCandidates :: Sudoku -> [[(Char, String)]]
+resolveAllCandidates rs = mapWithIndeces rs (\rs i j -> resolveCandidates rs i j)
+
+
+
+
+
