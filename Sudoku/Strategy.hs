@@ -34,9 +34,12 @@ mapWithIndeces :: Sudoku -> (Sudoku -> Int -> Int -> b) -> [[b]]
 mapWithIndeces rs f = let (rows, columns) = (rowCount rs, columnCount rs) in
                       map (\i -> (map (\j -> f rs i j) [0..(columns - 1)])) [0..(rows - 1)]
 
-toCandidatesMap :: Sudoku -> [[(Char, String)]]
-toCandidatesMap rs = mapWithIndeces rs (\rs i j -> (rs !! i !! j, findCandidates rs i j))
-
-
+run :: Sudoku -> (Sudoku -> [[(Char, String)]]) -> Sudoku
+run rs f  | outcome /= rs = run outcome f
+          | otherwise     = outcome
+          where
+            outcome = map (\r -> (map resolve r)) (f rs)
+            resolve (s, cs) | length cs == 1  = head cs
+                            | otherwise       = s
 
 
