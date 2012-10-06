@@ -5,8 +5,6 @@ import Data.List
 import Sudoku
 import Sudoku.Strategy
 
-type Candidates = [(Int, Int, String)]
-
 haveUnitInCommon :: Sudoku -> (Int, Int) -> (Int, Int) -> Bool
 haveUnitInCommon rs (i, j) (i', j') = i == i' || j == j' || findBlock rs i j == findBlock rs i' j'
 
@@ -23,10 +21,10 @@ findExcludableCandidates rs i j = concat (map (\(cs, _, _) -> cs) es)
                                   where
                                     es = filter (\(_, ab, cd) -> haveUnitInCommon rs (i, j) ab &&  haveUnitInCommon rs (i, j) cd) (nakedPairs rs)
 
-candidatePairs :: Sudoku -> Candidates
+candidatePairs :: Sudoku -> (Int, Int, String)
 candidatePairs rs = filter (\(i, j, cs) -> length cs == 2) $ allCandidates rs
 
-allCandidates :: Sudoku -> Candidates
+allCandidates :: Sudoku -> (Int, Int, String)
 allCandidates rs  = [ (i, j, findCandidates rs i j) | i<-[0..8], j<-[0..8] ]
 
 resolveCandidates :: Sudoku -> Int -> Int -> (Char, String)
@@ -42,9 +40,4 @@ resolveAllCandidates rs = mapWithIndeces rs (\rs i j -> resolveCandidates rs i j
 
 solve :: Sudoku -> Sudoku
 solve rs = run rs resolveAllCandidates
-
--- TODO: Alleen candidates elimeneren die beide nakedPairs inCommon hebben.
--- Dus niet maar één naked pair in common zoals nu het geval is.
--- nakedPairs kan in principe weer zonder concat geschreven worden.
--- TODO: Cellen vinden met 2 twee nakedPairs inCommon ???
 

@@ -1,0 +1,2 @@
+:set -XNoImplicitPrelude
+:set -fno-ghci-sandbox

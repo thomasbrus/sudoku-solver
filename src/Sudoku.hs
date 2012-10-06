@@ -45,3 +45,4 @@ columnCount rs = length $ head rs
 
 output :: Sudoku -> IO ()
 output rs = mapM_ putStrLn rs
+
