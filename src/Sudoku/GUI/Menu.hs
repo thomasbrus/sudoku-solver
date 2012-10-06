@@ -14,7 +14,11 @@ buttons =
   ]
 
 handleEvents s (MouseMotion (mx, my))
-  = (s, [DrawOnBuffer False, DrawPicture $ composeButtons s buttons mx my ])
+  = (s, [ScreenClear, DrawOnBuffer False, DrawPicture $ Pictures
+    [ compose s
+    , composeButtons s buttons mx my
+    ]
+  ])
 
 handleEvents s (MouseDown (mx, my)) 
   | Btn.inBoundary mx my (buttons !! 0)
