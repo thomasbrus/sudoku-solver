@@ -12,7 +12,10 @@ buttons =
   ]
 
 compose :: Float -> Float -> Picture
-compose mx my = Pictures [composeBackground, Pictures $ map Btn.compose buttons]
+compose mx my = Pictures
+  [ composeBackground,
+    Pictures $ map Btn.compose $ map (Btn.update mx my) buttons
+  ]
 
 composeBackground :: Picture
 composeBackground = Pictures
