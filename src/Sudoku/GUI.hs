@@ -6,14 +6,16 @@ import FPPrac.Events
 
 import Graphics.Gloss
 
+import Sudoku.GUI.State
 import qualified Sudoku.GUI.Menu as Menu
+import qualified Sudoku.GUI.Solver as Solver
 
-data State = State { count :: Int }
+initialState = State { stage = "menu", variant = "" }
 
-initialState = State { count = 0 }
+main = installEventHandler "Sudoku Solver" handleEvents initialState (Menu.compose initialState) 25
 
-main = installEventHandler "Sudoku Solver" handleEvents initialState Blank 25
-
-handleEvents :: userState -> Input -> (userState, [Output])
-handleEvents s (MouseMotion (mx, my)) = (s, [DrawPicture $ Menu.compose mx my])
-handleEvents s e = (s, [])
+handleEvents :: State -> Input -> (State, [Output])
+handleEvents s e
+  | (stage s) == "menu"   = Menu.handleEvents s e
+  | (stage s) == "solver" = Solver.handleEvents s e  
+  | otherwise             = (s, [])

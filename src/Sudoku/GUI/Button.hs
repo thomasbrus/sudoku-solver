@@ -1,13 +1,14 @@
-module Sudoku.GUI.Button (Button (..), compose, update) where
+module Sudoku.GUI.Button (Button (..), compose, update, inBoundary) where
 
 import Prelude
 import FPPrac.Events hiding (Button)
 import FPPrac.Graphics
+import Sudoku.GUI.State
 
 data Button = Rectangular (Float, Float, Float, Float) String (Float, Float) Bool Color
 
-compose :: Button -> Picture
-compose (Rectangular (x, y, width, height) text (tw, th) highlighted color)
+compose :: State -> Button -> Picture
+compose _ (Rectangular (x, y, width, height) text (tw, th) highlighted color)
   | highlighted
   = Pictures
   [ Translate x y $ Color (makeColor 1 1 1 0.05) $ rectangleSolid width height
@@ -24,28 +25,20 @@ compose (Rectangular (x, y, width, height) text (tw, th) highlighted color)
     ty = y - (th / 2)
 
 update :: Float -> Float -> Button -> Button
-update mx my (Rectangular coords text td _ color)
-  | inBoundary
+update mx my btn
+  | inBoundary mx my btn
   = Rectangular coords text td True color
   | otherwise
   = Rectangular coords text td False color
   where
+    (Rectangular coords text td _ color) = btn
+
+inBoundary :: Float -> Float -> Button -> Bool
+inBoundary mx my (Rectangular coords text td _ color)
+  = mx >= x1 && mx <= x2 && my >= y1 && my <= y2
+  where
     (x, y, width, height) = coords
     (x1, y1) = (x - (width / 2), y - (height / 2))
     (x2, y2) = (x + (width / 2), y + (height / 2))
-    inBoundary = mx >= x1 && mx <= x2 && my >= y1 && my <= y2
-
---(n, s, e, w) = (y, y - height x, x - width)
-
---pointInExtent :: Extent -> Point -> Bool
---pointInExtent (Extent n s e w) (x, y)
--- = let  n'  = fromIntegral n
---  s'  = fromIntegral s
---  e'  = fromIntegral e
---  w'  = fromIntegral w
-  
---   in x >= w' && x <= e'
---     && y >= s' && y <= n'
-
 
 
