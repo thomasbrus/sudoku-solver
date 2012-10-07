@@ -8,33 +8,41 @@ import qualified Sudoku.GUI.Button as Btn
 import qualified Sudoku.GUI.Menu as Menu
 import qualified Sudoku.GUI.Solver as Solver
 
-handleEvents (State "menu" _ _ _) (MouseDown (mx, my)) 
+handleEvents (State "menu" _ _) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Menu.buttons !! 0)
-  = ((State "solver" "4 x 4" mx my), [])
+  = (s' "4 x 4", redraw (s' "4 x 4") $ MouseUp (mx, my))
   | Btn.inBoundary mx my (Menu.buttons !! 1)
-  = ((State "solver" "9 x 9" mx my), [])
+  = (s' "9 x 9", redraw (s' "9 x 9") $ MouseUp (mx, my))
   | Btn.inBoundary mx my (Menu.buttons !! 2)
-  = ((State "solver" "12 x 12" mx my), [])
+  = (s' "12 x 12", redraw (s' "12 x 12") $ MouseUp (mx, my))
+  where
+    s' v = State "solver" v False
 
-handleEvents (State "solver" _ _ _) (MouseDown (mx, my)) 
+handleEvents (State "solver" v _) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Solver.buttons !! 0)
-  = ((State "menu" "" mx my), [])
-
-handleEvents s (MouseUp (_, _))
-  = (s, [DrawPicture $ composerFromState s])
+  = (s' v, redraw (s' v) $ MouseUp (mx, my))
+  where
+    s' v = State "menu" v False
 
 handleEvents s (MouseMotion (mx, my))
-  = (s', [DrawPicture $ composerFromState s ])
-  where
-    s' = s { mx = mx, my = my }
+  = (s, redraw s $ MouseMotion (mx, my))
+
+handleEvents s (MouseDown (mx, my)) =
+  let s' = s { mousePressed = True }
+  in (s', redraw s' $ MouseDown (mx, my))
+
+handleEvents s (MouseUp (mx, my)) =
+  let s' = s { mousePressed = False }
+  in (s', redraw s' $ MouseUp (mx, my))
 
 handleEvents s _ = (s, [])
 
-composerFromState :: State -> Picture
-composerFromState s
+redraw :: State -> Input -> [Output]
+redraw s e
   | stage s == "menu"
-  = Menu.compose s
+  = [DrawPicture $ Menu.compose s e]
   | stage s == "solver"
-  = Solver.compose s
+  = [DrawPicture $ Solver.compose s e]
+
 
 

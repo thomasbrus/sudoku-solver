@@ -1,21 +1,44 @@
 module Sudoku.GUI.Button (Button (..), compose, composeAll, inBoundary) where
 
 import Prelude
-import FPPrac.Events hiding (Button)
+import FPPrac.Events
 import FPPrac.Graphics
 import Sudoku.GUI.State
 
 data Button = Rectangular (Float, Float, Float, Float) String (Float, Float) Color
 
-compose :: State -> Button -> Picture
-compose s (Rectangular (x, y, width, height) text (tw, th) color)
-  | highlighted
+compose :: State -> Input -> Button -> Picture
+compose s (MouseMotion (mx, my)) (Rectangular (x, y, width, height) text (tw, th) color)
+  | mousePressed s
+  = Pictures
+  [ Translate x y $ Color (makeColor 1 1 1 0.02) $ rectangleSolid width height
+  , Translate x y $ Color color $ rectangleWire width height
+  , Translate tx (ty - 2) $ Color color $ Scale 0.2 0.2 $ Text text
+  ]
+  | inBoundary mx my btn && not (mousePressed s)
   = Pictures
   [ Translate x y $ Color (makeColor 1 1 1 0.05) $ rectangleSolid width height
   , Translate x y $ Color color $ rectangleWire width height
   , Translate tx ty $ Color color $ Scale 0.2 0.2 $ Text text
   ]
-  | otherwise
+  where
+    tx = x - (tw / 2)
+    ty = y - (th / 2)
+    btn = (Rectangular (x, y, width, height) text (tw, th) color)
+
+compose s (MouseDown (mx, my)) (Rectangular (x, y, width, height) text (tw, th) color)
+  | inBoundary mx my btn && mousePressed s
+  = Pictures
+  [ Translate x y $ Color (makeColor 1 1 1 0.02) $ rectangleSolid width height
+  , Translate x y $ Color color $ rectangleWire width height
+  , Translate tx (ty - 2) $ Color color $ Scale 0.2 0.2 $ Text text
+  ]
+  where
+    tx = x - (tw / 2)
+    ty = y - (th / 2)
+    btn = (Rectangular (x, y, width, height) text (tw, th) color)
+
+compose s _ (Rectangular (x, y, width, height) text (tw, th) color)
   = Pictures
   [ Translate x y $ Color (makeColor 0.8 0.8 0.8 1) $ rectangleWire width height
   , Translate tx ty $ Color color $ Scale 0.2 0.2 $ Text text
@@ -23,12 +46,9 @@ compose s (Rectangular (x, y, width, height) text (tw, th) color)
   where
     tx = x - (tw / 2)
     ty = y - (th / 2)
-    (mx', my') = (mx s, my s)
-    btn = (Rectangular (x, y, width, height) text (tw, th) color)
-    highlighted = inBoundary mx' my' btn
 
-composeAll :: State -> [Button] -> Picture
-composeAll s btns = Pictures $ map (compose s) btns
+composeAll :: State -> Input -> [Button] -> Picture
+composeAll s e btns = Pictures $ map (compose s e) btns
 
 inBoundary :: Float -> Float -> Button -> Bool
 inBoundary mx my (Rectangular coords _ _ _)

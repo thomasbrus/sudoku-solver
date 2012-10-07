@@ -1,7 +1,7 @@
 module Sudoku.GUI.Solver (compose, buttons) where
 
 import Prelude
---import FPPrac.Events hiding (Button)
+import FPPrac.Events (Input)
 import FPPrac.Graphics
 import Sudoku.GUI.State
 import qualified Sudoku.GUI.Button as Btn
@@ -13,11 +13,10 @@ buttons =
   [ Btn.Rectangular (290, (-240), 190, 60) "Go Back" (108, 21) (greyN 0.5)
   ]
 
-compose :: State -> Picture
-compose s = Pictures
-  [ composeBackground, Translate (-100) 0 $ composeRaster s, Btn.composeAll s buttons
+compose :: State -> Input -> Picture
+compose s e = Pictures
+  [ composeBackground, Translate (-100) 0 $ composeRaster s, Btn.composeAll s e buttons
   ]
-
 
 composeRaster :: State -> Picture
 composeRaster s

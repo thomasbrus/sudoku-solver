@@ -6,7 +6,7 @@ import FPPrac.Events
 import Sudoku.GUI.State
 import qualified Sudoku.GUI.Events as Events
 
-initialState = State { stage = "menu", variant = "", mx = -1, my = -1 }
+initialState = State { stage = "menu", variant = "", mousePressed = False }
 
 main = installEventHandler "Sudoku Solver" handleEvents initialState Blank 25
 

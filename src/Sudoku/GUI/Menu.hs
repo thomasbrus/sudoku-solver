@@ -1,7 +1,7 @@
 module Sudoku.GUI.Menu (compose, buttons) where
 
 import Prelude
---import FPPrac.Events hiding (Button)
+import FPPrac.Events (Input)
 import FPPrac.Graphics
 import Sudoku.GUI.State
 import qualified Sudoku.GUI.Button as Btn
@@ -12,8 +12,8 @@ buttons =
   , Btn.Rectangular (180, -90, 130, 130) "12 x 12" (108, 21) red
   ]
 
-compose :: State -> Picture
-compose s = Pictures [composeBackground, Btn.composeAll s buttons]
+compose :: State -> Input -> Picture
+compose s e = Pictures [composeBackground, Btn.composeAll s e buttons]
 
 composeBackground :: Picture
 composeBackground = Pictures
