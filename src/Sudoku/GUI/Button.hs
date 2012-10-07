@@ -9,7 +9,7 @@ data Button = Rectangular (Float, Float, Float, Float) String (Float, Float) Col
 
 compose :: State -> Input -> Button -> Picture
 compose s (MouseMotion (mx, my)) (Rectangular (x, y, width, height) text (tw, th) color)
-  | mousePressed s
+  | inBoundary mx my btn && mousePressed s
   = Pictures
   [ Translate x y $ Color (makeColor 1 1 1 0.02) $ rectangleSolid width height
   , Translate x y $ Color color $ rectangleWire width height

@@ -1,12 +1,12 @@
 module Sudoku.GUI where
 
 import Prelude
-import FPPrac.Graphics
+import FPPrac.Graphics hiding (dim)
 import FPPrac.Events
 import Sudoku.GUI.State
 import qualified Sudoku.GUI.Events as Events
 
-initialState = State { stage = "menu", variant = "", mousePressed = False }
+initialState = State { stage = "menu", dim = 9, mousePressed = False }
 
 main = installEventHandler "Sudoku Solver" handleEvents initialState Blank 25
 

@@ -10,19 +10,19 @@ import qualified Sudoku.GUI.Solver as Solver
 
 handleEvents (State "menu" _ _) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Menu.buttons !! 0)
-  = (s' "4 x 4", redraw (s' "4 x 4") $ MouseUp (mx, my))
+  = (s' 4, redraw (s' 4) $ MouseUp (mx, my))
   | Btn.inBoundary mx my (Menu.buttons !! 1)
-  = (s' "9 x 9", redraw (s' "9 x 9") $ MouseUp (mx, my))
+  = (s' 9, redraw (s' 9) $ MouseUp (mx, my))
   | Btn.inBoundary mx my (Menu.buttons !! 2)
-  = (s' "12 x 12", redraw (s' "12 x 12") $ MouseUp (mx, my))
+  = (s' 12, redraw (s' 12) $ MouseUp (mx, my))
   where
-    s' v = State "solver" v False
+    s' d = State "solver" d False
 
-handleEvents (State "solver" v _) (MouseUp (mx, my)) 
+handleEvents (State "solver" d _) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Solver.buttons !! 0)
-  = (s' v, redraw (s' v) $ MouseUp (mx, my))
+  = (s' d, redraw (s' d) $ MouseUp (mx, my))
   where
-    s' v = State "menu" v False
+    s' d = State "menu" d False
 
 handleEvents s (MouseMotion (mx, my))
   = (s, redraw s $ MouseMotion (mx, my))
