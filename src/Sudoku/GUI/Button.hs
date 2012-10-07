@@ -55,7 +55,7 @@ inBoundary mx my (Rectangular coords _ _ _)
   = mx >= x1 && mx <= x2 && my >= y1 && my <= y2
   where
     (x, y, width, height) = coords
-    (x1, y1) = (x - (width / 2), y - (height / 2))
-    (x2, y2) = (x + (width / 2), y + (height / 2))
+    (x1, y1) = (x - 1 - (width / 2), y - 1 - (height / 2))
+    (x2, y2) = (x +  1 + (width / 2), y + 1 + (height / 2))
 
 

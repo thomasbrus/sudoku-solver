@@ -40,9 +40,9 @@ handleEvents s _ = (s, [])
 redraw :: State -> Input -> [Output]
 redraw s e
   | stage s == "menu"
-  = [DrawPicture $ Menu.compose s e]
+  = [DrawOnBuffer True, ScreenClear, DrawPicture $ Menu.compose s e]
   | stage s == "solver"
-  = [DrawPicture $ Solver.compose s e]
+  = [DrawOnBuffer True, ScreenClear, DrawPicture $ Solver.compose s e]
 
 
 
