@@ -29,13 +29,14 @@ composeTile s (MouseMotion (mx, my)) i j
   = Translate x y $ Pictures
     [ Color violet $ rectangleWire (cellSize + 2) (cellSize + 2)
     , Color borderColor $ rectangleWire cellSize cellSize
-    , Translate (-8) (-10) $ Color white $ Scale 0.2 0.2 $ Text "..."
+    , Translate (-35 * scale) (-50 * scale) $ Color white $ Scale scale scale $ Text "?"
     ]
   where
     [i', j', dim']  = map fromIntegral [i, j, dim s]
     cellSize        = (size / dim')
     x               = (i' * cellSize)
     y               = (j' * cellSize)
+    scale           = 2.5 / dim'
 
 composeTile s _ i j =
   Translate (i' * cellSize) (j' * cellSize) $ Pictures
