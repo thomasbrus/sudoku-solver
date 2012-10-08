@@ -27,7 +27,7 @@ composeTile s (MouseMotion (mx, my)) i j
     mx < x - (size / 2) + cellSize - 100 &&
     my > y - (size / 2) &&
     my < y - (size / 2) + cellSize &&
-    not (isTaken (sudoku s) i j)
+    not (isTaken (sudoku s) (dim s - j - 1) i)
   = Translate x y $ Pictures
     [ Color violet $ rectangleWire (cellSize + 2) (cellSize + 2)
     , Color borderColor $ rectangleWire cellSize cellSize
@@ -48,12 +48,12 @@ composeTile s _ i j =
   where
     [i', j', dim']  = map fromIntegral [i, j, dim s]
     cellSize        = (size / dim')
-    text            = showCell (sudoku s) i j
+    text            = showCell (sudoku s) (dim s - j - 1) i
 
 
 showCell :: Sudoku -> Int -> Int -> String
-showCell su i j | c == '.'  = ""
-            | otherwise     = [c]
+showCell su i j | elem c "123456789" = [c]
+                | otherwise = ""
             where
             c = su !! i !! j
 

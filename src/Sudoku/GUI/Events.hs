@@ -1,6 +1,9 @@
+{-# LANGUAGE RecordWildCards #-}
+
 module Sudoku.GUI.Events (handleEvents) where
 
 import Prelude
+import Data.Maybe
 import FPPrac.Events
 import FPPrac.Graphics
 import Sudoku
@@ -8,27 +11,42 @@ import Sudoku.GUI.State
 import qualified Sudoku.GUI.Button as Btn
 import qualified Sudoku.GUI.Menu as Menu
 import qualified Sudoku.GUI.Solver as Solver
+import qualified Sudoku.GUI.Raster as Raster
 
-handleEvents (State "menu" _ _ su) (MouseUp (mx, my)) 
+--store@(Store {userHandlerEnabled=True,..})
+
+handleEvents state@(State {stage="menu",..}) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Menu.buttons !! 0)
-  = f $ State "solver" 4 False empty4x4Sudoku
+  = f $ state { stage = "solver", sudoku = empty4x4Sudoku, mousePressed = False }
   | Btn.inBoundary mx my (Menu.buttons !! 1)
-  = f $ State "solver" 9 False exampleSudoku1
+  = f $ state { stage = "solver", sudoku = exampleSudoku1, mousePressed = False }
   | Btn.inBoundary mx my (Menu.buttons !! 2)
-  = f $ State "solver" 12 False empty12x12Sudoku
+  = f $ state { stage = "solver", sudoku = empty12x12Sudoku, mousePressed = False }
   where
-    f state = (state, redraw state $ MouseUp (mx, my))
+    f s = (s, redraw s $ MouseUp (mx, my))
 
-handleEvents (State "solver" d _ su) (MouseUp (mx, my)) 
+handleEvents state@(State {stage="solver",dim=d,..}) (MouseUp (mx, my))
   | Btn.inBoundary mx my (Solver.buttons !! 0)
-  = f $ State "menu" d False [""]
+  = f $ state { stage = "menu", mousePressed = False }
   | Btn.inBoundary mx my (Solver.buttons !! 1)
-  = f $ State "solver" d False (es d)
+  = f $ state { sudoku = (es d) }
+  | otherwise -- Raster.inBoundary
+  = (state { selectedCell = (Just (row, column)) }, [DrawOnBuffer True, GraphPrompt ("Enter a number", "Range (0..9)")])
   where
-    f state = (state, redraw state $ MouseUp (mx, my))
+    row     = 1 -- Raster.calculateRow mx
+    column  = 1 -- Raster.calculateColumn my
+    f s = (s, redraw s $ MouseUp (mx, my))
     es d  | d == 4    = empty4x4Sudoku
           | d == 9    = empty9x9Sudoku
           | d == 12   = empty12x12Sudoku
+
+handleEvents state@(State {stage="solver",selectedCell=sc,sudoku=su,..}) (Prompt ("Enter a number", n))
+  = (s', redraw s' NoInput)
+  where
+    (row, column) = fromJust sc
+    su' | isNothing sc = su
+        | isJust sc = (updateCell (su) (head n) (fst $ fromJust sc) (snd $ fromJust sc))
+    s' = state { selectedCell = Nothing, sudoku = su' }
 
 handleEvents s (MouseMotion (mx, my))
   = (s, redraw s $ MouseMotion (mx, my))

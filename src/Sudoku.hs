@@ -101,6 +101,12 @@ isAllowed rs i j s  = not (isTaken rs i j) &&
                       not (isInRow (transpose rs) j s) &&
                       not (isInBlock rs i j s)
 
+updateCell :: Sudoku -> Char -> Int -> Int -> Sudoku
+updateCell rs c i j = mapWithIndeces rs f
+                    where
+                      f _ i' j' | i' == i && j == j' = c
+                                | otherwise = rs !! i' !! j'
+
 mapWithIndeces :: Sudoku -> (Sudoku -> Int -> Int -> b) -> [[b]]
 mapWithIndeces rs f = let (rows, columns) = (rowCount rs, columnCount rs) in
                       map (\i -> (map (\j -> f rs i j) [0..(columns - 1)])) [0..(rows - 1)]
