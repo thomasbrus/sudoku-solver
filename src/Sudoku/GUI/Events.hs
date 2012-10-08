@@ -5,7 +5,7 @@ module Sudoku.GUI.Events (handleEvents) where
 import Prelude
 import Data.Maybe
 import FPPrac.Events
-import FPPrac.Graphics
+import FPPrac.Graphics hiding (dim)
 import Sudoku
 import Sudoku.GUI.State
 import qualified Sudoku.GUI.Button as Btn
@@ -17,11 +17,11 @@ import qualified Sudoku.GUI.Raster as Raster
 
 handleEvents state@(State {stage="menu",..}) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Menu.buttons !! 0)
-  = f $ state { stage = "solver", sudoku = empty4x4Sudoku, mousePressed = False }
+  = f $ state { stage = "solver", sudoku = empty4x4Sudoku, dim = 4, mousePressed = False }
   | Btn.inBoundary mx my (Menu.buttons !! 1)
-  = f $ state { stage = "solver", sudoku = exampleSudoku1, mousePressed = False }
+  = f $ state { stage = "solver", sudoku = exampleSudoku1, dim = 9, mousePressed = False }
   | Btn.inBoundary mx my (Menu.buttons !! 2)
-  = f $ state { stage = "solver", sudoku = empty12x12Sudoku, mousePressed = False }
+  = f $ state { stage = "solver", sudoku = empty12x12Sudoku, dim = 12, mousePressed = False }
   where
     f s = (s, redraw s $ MouseUp (mx, my))
 
