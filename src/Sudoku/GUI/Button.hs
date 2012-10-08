@@ -1,4 +1,4 @@
-module Sudoku.GUI.Button (Button (..), compose, composeAll, inBoundary) where
+module Sudoku.GUI.Button (Button (..), draw, drawAll, inBoundary) where
 
 import Prelude
 import FPPrac.Events
@@ -7,8 +7,8 @@ import Sudoku.GUI.State
 
 data Button = Rectangular (Float, Float, Float, Float) String (Float, Float) Color
 
-compose :: State -> Input -> Button -> Picture
-compose s (MouseMotion (mx, my)) (Rectangular (x, y, width, height) text (tw, th) color)
+draw :: State -> Input -> Button -> Picture
+draw s (MouseMotion (mx, my)) (Rectangular (x, y, width, height) text (tw, th) color)
   | inBoundary mx my btn && mousePressed s
   = Pictures
   [ Translate x y $ Color (makeColor 1 1 1 0.02) $ rectangleSolid width height
@@ -26,7 +26,7 @@ compose s (MouseMotion (mx, my)) (Rectangular (x, y, width, height) text (tw, th
     ty = y - (th / 2)
     btn = (Rectangular (x, y, width, height) text (tw, th) color)
 
-compose s (MouseDown (mx, my)) (Rectangular (x, y, width, height) text (tw, th) color)
+draw s (MouseDown (mx, my)) (Rectangular (x, y, width, height) text (tw, th) color)
   | inBoundary mx my btn && mousePressed s
   = Pictures
   [ Translate x y $ Color (makeColor 1 1 1 0.02) $ rectangleSolid width height
@@ -38,7 +38,7 @@ compose s (MouseDown (mx, my)) (Rectangular (x, y, width, height) text (tw, th) 
     ty = y - (th / 2)
     btn = (Rectangular (x, y, width, height) text (tw, th) color)
 
-compose s _ (Rectangular (x, y, width, height) text (tw, th) color)
+draw s _ (Rectangular (x, y, width, height) text (tw, th) color)
   = Pictures
   [ Translate x y $ Color (makeColor 0.8 0.8 0.8 1) $ rectangleWire width height
   , Translate tx ty $ Color color $ Scale 0.2 0.2 $ Text text
@@ -47,8 +47,8 @@ compose s _ (Rectangular (x, y, width, height) text (tw, th) color)
     tx = x - (tw / 2)
     ty = y - (th / 2)
 
-composeAll :: State -> Input -> [Button] -> Picture
-composeAll s e btns = Pictures $ map (compose s e) btns
+drawAll :: State -> Input -> [Button] -> Picture
+drawAll s e btns = Pictures $ map (draw s e) btns
 
 inBoundary :: Float -> Float -> Button -> Bool
 inBoundary mx my (Rectangular coords _ _ _)

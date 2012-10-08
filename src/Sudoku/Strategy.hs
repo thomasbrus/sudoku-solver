@@ -8,6 +8,12 @@ findCandidates :: Sudoku -> Int -> Int -> [Char]
 findCandidates rs i j | isTaken rs i j  = ""
                       | otherwise       = filter ((isAllowed) rs i j) "123456789"
 
+step :: Sudoku -> (Sudoku -> [[(Char, String)]]) -> Sudoku
+step rs f = map (\r -> (map resolve r)) (f rs)
+          where
+            resolve (s, cs) | length cs == 1  = head cs
+                            | otherwise       = s
+
 run :: Sudoku -> (Sudoku -> [[(Char, String)]]) -> Sudoku
 run rs f  | outcome /= rs = run outcome f
           | otherwise     = outcome

@@ -1,4 +1,4 @@
-module Sudoku.Strategy.NakedSimple where
+module Sudoku.Strategy.NakedSingle where
 
 import Data.Char
 import Data.List
