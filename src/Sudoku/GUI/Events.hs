@@ -30,11 +30,10 @@ handleEvents state@(State {stage="solver",dim=d,..}) (MouseUp (mx, my))
   = f $ state { stage = "menu", mousePressed = False }
   | Btn.inBoundary mx my (Solver.buttons !! 1)
   = f $ state { sudoku = (es d) }
-  | otherwise -- Raster.inBoundary
-  = (state { selectedCell = (Just (row, column)) }, [DrawOnBuffer True, GraphPrompt ("Enter a number", "Range (0..9)")])
+  | isJust $ cell
+  = (state { selectedCell = cell, mousePressed = False }, [DrawOnBuffer True, GraphPrompt ("Enter a number", "Range (0..9)")])
   where
-    row     = 1 -- Raster.calculateRow mx
-    column  = 1 -- Raster.calculateColumn my
+    cell = Raster.calculateCell mx my d
     f s = (s, redraw s $ MouseUp (mx, my))
     es d  | d == 4    = empty4x4Sudoku
           | d == 9    = empty9x9Sudoku

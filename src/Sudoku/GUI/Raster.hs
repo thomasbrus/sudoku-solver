@@ -1,4 +1,4 @@
-module Sudoku.GUI.Raster (compose, handleEvents) where
+module Sudoku.GUI.Raster (compose, handleEvents, calculateCell) where
 
 import Prelude
 import FPPrac.Events hiding (Button)
@@ -43,7 +43,6 @@ composeTile s (MouseMotion (mx, my)) i j
 composeTile s _ i j =
   Translate (i' * cellSize) (j' * cellSize) $ Pictures
     [ Color borderColor $ rectangleWire cellSize cellSize
-    -- , Translate (-8) (-10) $ Color (greyN 0.5) $ Scale 0.2 0.2 $ Text text
     , Translate (-35 * scale) (-50 * scale) $ Color (greyN 0.5) $ Scale scale scale $ Text text
     ]
   where
@@ -58,8 +57,12 @@ showCell su i j | elem c "123456789" = [c]
             where
             c = su !! i !! j
 
---inBoundary :: Float -> Float -> Button -> Bool
---inBoundary mx my (Rectangular coords _ _ _)
 
-
+calculateCell :: Float -> Float -> Int -> Maybe (Int, Int)
+calculateCell mx my dim | elem i [0..(dim - 1)] && elem j [0..(dim - 1)] = Just (i, j)
+                        | otherwise = Nothing
+                        where
+                          cellSize = size / (fromIntegral dim)
+                          i = dim - ceiling ((my + (size / 2)) / cellSize)
+                          j = floor ((mx + 100 + (size / 2)) / cellSize)
 
