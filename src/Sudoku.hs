@@ -1,5 +1,6 @@
 module Sudoku where
 
+import Prelude
 import Data.Char
 
 type Sudoku = [[Char]]
@@ -36,6 +37,17 @@ exampleSudoku3 =
   , "563.4.987"
   , "2......15"
   , ".1..5..2." ]
+
+emptySudoku =
+  [ "........."
+  , "........."
+  , "........."
+  , "........."
+  , "........."
+  , "........."
+  , "........."
+  , "........."
+  , "........." ]
 
 rowCount :: Sudoku -> Int
 rowCount rs = length rs

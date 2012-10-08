@@ -25,7 +25,8 @@ composeTile s (MouseMotion (mx, my)) i j
   | mx > x - (size / 2) - cellSize - 100 &&
     mx < x - (size / 2) - 100 &&
     my > y - (size / 2) - cellSize &&
-    my < y - (size / 2)
+    my < y - (size / 2) &&
+    ((sudoku s) !! (i - 1) !! (j - 1)) == '.'
   = Translate x y $ Pictures
     [ Color violet $ rectangleWire (cellSize + 2) (cellSize + 2)
     , Color borderColor $ rectangleWire cellSize cellSize
@@ -41,9 +42,12 @@ composeTile s (MouseMotion (mx, my)) i j
 composeTile s _ i j =
   Translate (i' * cellSize) (j' * cellSize) $ Pictures
     [ Color borderColor $ rectangleWire cellSize cellSize
+    , Translate (-8) (-10) $ Color (greyN 0.5) $ Scale 0.2 0.2 $ Text [((sudoku s) !! (i - 1) !! (j - 1))]
     ]
   where
     [i', j', dim']  = map fromIntegral [i, j, dim s]
     cellSize        = (size / dim')
 
-
+-- TODO
+-- inBoundary :: Float -> Float -> Button -> Bool
+-- inBoundary mx my (Rectangular coords _ _ _)

@@ -9,6 +9,7 @@ import qualified Sudoku.GUI.Raster as Raster
 
 buttons =
   [ Btn.Rectangular (290, (-240), 190, 60) "Go Back" (108, 21) (greyN 0.5)
+  , Btn.Rectangular (290, (-160), 190, 60) "Clear All" (100, 21) (dark red)
   ]
 
 compose :: State -> Input -> Picture

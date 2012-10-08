@@ -22,3 +22,4 @@ composeBackground = Pictures
   , Translate (-152) 78 $ Color (makeColor 0.5 0.5 0.5 1) $ Scale 0.2 0.2 $ Text "Choose a variant below:" -- 304 x 20
   ]
 
+-- TODO: Move to ./stages
