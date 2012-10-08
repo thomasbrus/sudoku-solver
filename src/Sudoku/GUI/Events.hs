@@ -23,9 +23,12 @@ handleEvents (State "solver" d _ su) (MouseUp (mx, my))
   | Btn.inBoundary mx my (Solver.buttons !! 0)
   = f $ State "menu" d False [""]
   | Btn.inBoundary mx my (Solver.buttons !! 1)
-  = f $ State "solver" d False [""]
+  = f $ State "solver" d False (es d)
   where
     f state = (state, redraw state $ MouseUp (mx, my))
+    es d  | d == 4    = empty4x4Sudoku
+          | d == 9    = empty9x9Sudoku
+          | d == 12   = empty12x12Sudoku
 
 handleEvents s (MouseMotion (mx, my))
   = (s, redraw s $ MouseMotion (mx, my))
