@@ -2,6 +2,7 @@ module Sudoku.Strategy.NakedPairs where
 
 import Data.Char
 import Data.List
+import Prelude
 import Sudoku
 import Sudoku.Strategy
 
@@ -21,10 +22,10 @@ findExcludableCandidates rs i j = concat (map (\(cs, _, _) -> cs) es)
                                   where
                                     es = filter (\(_, ab, cd) -> haveUnitInCommon rs (i, j) ab &&  haveUnitInCommon rs (i, j) cd) (nakedPairs rs)
 
-candidatePairs :: Sudoku -> (Int, Int, String)
+candidatePairs :: Sudoku -> [(Int, Int, String)]
 candidatePairs rs = filter (\(i, j, cs) -> length cs == 2) $ allCandidates rs
 
-allCandidates :: Sudoku -> (Int, Int, String)
+allCandidates :: Sudoku -> [(Int, Int, String)]
 allCandidates rs  = [ (i, j, findCandidates rs i j) | i<-[0..8], j<-[0..8] ]
 
 resolveCandidates :: Sudoku -> Int -> Int -> (Char, String)

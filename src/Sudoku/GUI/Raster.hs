@@ -4,6 +4,7 @@ import Prelude
 import FPPrac.Events hiding (Button)
 import FPPrac.Graphics hiding (dim)
 import Sudoku.GUI.State
+import Sudoku (isTaken, Sudoku)
 
 handleEvents s e = (s, [])
 
@@ -17,16 +18,16 @@ compose s e = Translate (-100) 0 $ Pictures
   ]
   where
     dim' = fromIntegral (dim s) :: Float
-    tiles = [ composeTile s e i j | i<-[1..(dim s)], j<-[1..(dim s)] ]
-    shift = (-size / 2) - (size / dim') / 2
+    tiles = [ composeTile s e i j | i<-[0..(dim s - 1)], j<-[0..(dim s - 1)] ]
+    shift = (-size / 2) + (size / dim') / 2
 
 composeTile :: State -> Input -> Int -> Int -> Picture
 composeTile s (MouseMotion (mx, my)) i j
-  | mx > x - (size / 2) - cellSize - 100 &&
-    mx < x - (size / 2) - 100 &&
-    my > y - (size / 2) - cellSize &&
-    my < y - (size / 2) &&
-    ((sudoku s) !! (i - 1) !! (j - 1)) == '.'
+  | mx > x - (size / 2) - 100 &&
+    mx < x - (size / 2) + cellSize - 100 &&
+    my > y - (size / 2) &&
+    my < y - (size / 2) + cellSize &&
+    not (isTaken (sudoku s) i j)
   = Translate x y $ Pictures
     [ Color violet $ rectangleWire (cellSize + 2) (cellSize + 2)
     , Color borderColor $ rectangleWire cellSize cellSize
@@ -42,12 +43,22 @@ composeTile s (MouseMotion (mx, my)) i j
 composeTile s _ i j =
   Translate (i' * cellSize) (j' * cellSize) $ Pictures
     [ Color borderColor $ rectangleWire cellSize cellSize
-    , Translate (-8) (-10) $ Color (greyN 0.5) $ Scale 0.2 0.2 $ Text [((sudoku s) !! (i - 1) !! (j - 1))]
+    , Translate (-8) (-10) $ Color (greyN 0.5) $ Scale 0.2 0.2 $ Text text
     ]
   where
     [i', j', dim']  = map fromIntegral [i, j, dim s]
     cellSize        = (size / dim')
+    text            = showCell (sudoku s) i j
 
--- TODO
--- inBoundary :: Float -> Float -> Button -> Bool
--- inBoundary mx my (Rectangular coords _ _ _)
+
+showCell :: Sudoku -> Int -> Int -> String
+showCell su i j | c == '.'  = ""
+            | otherwise     = [c]
+            where
+            c = su !! i !! j
+
+--inBoundary :: Float -> Float -> Button -> Bool
+--inBoundary mx my (Rectangular coords _ _ _)
+
+
+

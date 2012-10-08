@@ -2,6 +2,7 @@ module Sudoku where
 
 import Prelude
 import Data.Char
+import Data.List
 
 type Sudoku = [[Char]]
 
@@ -38,7 +39,14 @@ exampleSudoku3 =
   , "2......15"
   , ".1..5..2." ]
 
-emptySudoku =
+empty4x4Sudoku =
+  [ "...."
+  , "...."
+  , "...."
+  , "...."  
+  ]
+
+empty9x9Sudoku =
   [ "........."
   , "........."
   , "........."
@@ -47,13 +55,55 @@ emptySudoku =
   , "........."
   , "........."
   , "........."
-  , "........." ]
+  , "........."
+  ]
+
+empty12x12Sudoku =
+  [ "............"
+  , "............"
+  , "............"
+  , "............"
+  , "............"
+  , "............"
+  , "............"
+  , "............"
+  , "............"
+  , "............"
+  , "............"
+  , "............"
+  ]
 
 rowCount :: Sudoku -> Int
 rowCount rs = length rs
 
 columnCount :: Sudoku -> Int
 columnCount rs = length $ head rs
+
+isTaken :: Sudoku -> Int -> Int -> Bool
+isTaken rs i j = isDigit $ rs !! i !! j
+
+isInRow :: Sudoku -> Int -> Char -> Bool
+isInRow rs i s = elem s (rs !! i)
+
+findBlock :: Sudoku -> Int -> Int -> [[Char]]
+findBlock rs i j  = map ((take 3) . (drop j')) (take 3 $ drop i' rs)
+                  where
+                    i' = (div i 3) * 3
+                    j' = (div j 3) * 3
+
+isInBlock :: Sudoku -> Int -> Int -> Char -> Bool
+isInBlock rs i j s  = let symbols = concat $ findBlock rs i j in
+                      elem s symbols
+
+isAllowed :: Sudoku -> Int -> Int -> Char -> Bool
+isAllowed rs i j s  = not (isTaken rs i j) &&
+                      not (isInRow rs i s) &&
+                      not (isInRow (transpose rs) j s) &&
+                      not (isInBlock rs i j s)
+
+mapWithIndeces :: Sudoku -> (Sudoku -> Int -> Int -> b) -> [[b]]
+mapWithIndeces rs f = let (rows, columns) = (rowCount rs, columnCount rs) in
+                      map (\i -> (map (\j -> f rs i j) [0..(columns - 1)])) [0..(rows - 1)]
 
 output :: Sudoku -> IO ()
 output rs = mapM_ putStrLn rs

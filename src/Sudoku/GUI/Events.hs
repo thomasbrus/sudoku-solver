@@ -11,19 +11,19 @@ import qualified Sudoku.GUI.Solver as Solver
 
 handleEvents (State "menu" _ _ su) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Menu.buttons !! 0)
-  = (s' 4, redraw (s' 4) $ MouseUp (mx, my))
+  = f $ State "solver" 4 False empty4x4Sudoku
   | Btn.inBoundary mx my (Menu.buttons !! 1)
-  = (s' 9, redraw (s' 9) $ MouseUp (mx, my))
+  = f $ State "solver" 9 False exampleSudoku1
   | Btn.inBoundary mx my (Menu.buttons !! 2)
-  = (s' 12, redraw (s' 12) $ MouseUp (mx, my))
+  = f $ State "solver" 12 False empty12x12Sudoku
   where
-    s' d = State "solver" d False su
+    f state = (state, redraw state $ MouseUp (mx, my))
 
 handleEvents (State "solver" d _ su) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Solver.buttons !! 0)
-  = f $ State "menu" d False emptySudoku
+  = f $ State "menu" d False [""]
   | Btn.inBoundary mx my (Solver.buttons !! 1)
-  = f $ State "solver" d False emptySudoku
+  = f $ State "solver" d False [""]
   where
     f state = (state, redraw state $ MouseUp (mx, my))
 
