@@ -43,13 +43,14 @@ composeTile s (MouseMotion (mx, my)) i j
 composeTile s _ i j =
   Translate (i' * cellSize) (j' * cellSize) $ Pictures
     [ Color borderColor $ rectangleWire cellSize cellSize
-    , Translate (-8) (-10) $ Color (greyN 0.5) $ Scale 0.2 0.2 $ Text text
+    -- , Translate (-8) (-10) $ Color (greyN 0.5) $ Scale 0.2 0.2 $ Text text
+    , Translate (-35 * scale) (-50 * scale) $ Color (greyN 0.5) $ Scale scale scale $ Text text
     ]
   where
     [i', j', dim']  = map fromIntegral [i, j, dim s]
     cellSize        = (size / dim')
     text            = showCell (sudoku s) (dim s - j - 1) i
-
+    scale           = 2 / dim'
 
 showCell :: Sudoku -> Int -> Int -> String
 showCell su i j | elem c "123456789" = [c]
