@@ -9,4 +9,5 @@ data State = State
   , mousePressed :: Bool
   , sudoku :: Sudoku
   , selectedCell :: (Maybe (Int, Int))
+  , invalidCell :: (Maybe (Int, Int))
   }

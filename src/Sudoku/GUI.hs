@@ -13,6 +13,7 @@ initialState = State
   , mousePressed = False
   , sudoku = exampleSudoku1
   , selectedCell = Nothing
+  , invalidCell = Nothing
   }
 
 main = installEventHandler "Sudoku Solver" handleEvents initialState Blank 25

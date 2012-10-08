@@ -13,8 +13,6 @@ import qualified Sudoku.GUI.Menu as Menu
 import qualified Sudoku.GUI.Solver as Solver
 import qualified Sudoku.GUI.Raster as Raster
 
---store@(Store {userHandlerEnabled=True,..})
-
 handleEvents state@(State {stage="menu",..}) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Menu.buttons !! 0)
   = f $ state { stage = "solver", sudoku = empty4x4Sudoku, dim = 4, mousePressed = False }
@@ -25,13 +23,13 @@ handleEvents state@(State {stage="menu",..}) (MouseUp (mx, my))
   where
     f s = (s, redraw s $ MouseUp (mx, my))
 
-handleEvents state@(State {stage="solver",dim=d,..}) (MouseUp (mx, my))
+handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my))
   | Btn.inBoundary mx my (Solver.buttons !! 0)
-  = f $ state { stage = "menu", mousePressed = False }
+  = f $ state { stage = "menu", mousePressed = False, invalidCell = Nothing }
   | Btn.inBoundary mx my (Solver.buttons !! 1)
   = f $ state { sudoku = (es d) }
-  | isJust $ cell
-  = (state { selectedCell = cell, mousePressed = False }, [DrawOnBuffer True, GraphPrompt ("Enter a number", "Range (0..9)")])
+  | isJust cell && not (isTaken su (fst $ fromJust cell) (snd $ fromJust cell))
+  = (state { selectedCell = cell, mousePressed = False, invalidCell = Nothing }, [GraphPrompt ("Enter a number", "Range (0..9)")])
   where
     cell = Raster.calculateCell mx my d
     f s = (s, redraw s $ MouseUp (mx, my))
@@ -39,13 +37,21 @@ handleEvents state@(State {stage="solver",dim=d,..}) (MouseUp (mx, my))
           | d == 9    = empty9x9Sudoku
           | d == 12   = empty12x12Sudoku
 
-handleEvents state@(State {stage="solver",selectedCell=sc,sudoku=su,..}) (Prompt ("Enter a number", n))
+handleEvents state@(State {stage="solver",selectedCell=sc,sudoku=su,dim=d,..}) (Prompt ("Enter a number", n))
   = (s', redraw s' NoInput)
   where
+    c = head n
     (row, column) = fromJust sc
-    su' | isNothing sc = su
-        | isJust sc = (updateCell (su) (head n) (fst $ fromJust sc) (snd $ fromJust sc))
-    s' = state { selectedCell = Nothing, sudoku = su' }
+    su' | isNothing sc ||
+        not (isAllowed su row column c) ||
+        notElem [c] (map show [1..d])
+        = su
+        | isJust sc
+        = (updateCell (su) c (fst $ fromJust sc) (snd $ fromJust sc))
+    s'  | su == su'
+        = state { selectedCell = Nothing, sudoku = su', invalidCell = sc }
+        | otherwise
+        = state { selectedCell = Nothing, sudoku = su' }
 
 handleEvents s (MouseMotion (mx, my))
   = (s, redraw s $ MouseMotion (mx, my))
