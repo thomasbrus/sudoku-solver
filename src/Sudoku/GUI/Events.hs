@@ -50,14 +50,15 @@ handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my)
 handleEvents state@(State {stage="solver",selectedCell=sc,sudoku=su,dim=d,..}) (Prompt ("Enter a number", n))
   = (s', redraw s' NoInput)
   where
-    c = head n
+    c = if null n then '.' else head n
     (row, column) = fromJust sc
-    su' | isNothing sc ||
-          not (isAllowed su row column c)
+    su' | c /= '.' &&
+          (isNothing sc ||
+          not (isAllowed su row column c))
         = su
         | isJust sc
         = (update (su) (fst $ fromJust sc) (snd $ fromJust sc)) c
-    s'  | su == su'
+    s'  | su == su' && c /= '.'
         = state { selectedCell = Nothing, sudoku = su', invalidCell = sc }
         | otherwise
         = state { selectedCell = Nothing, sudoku = su' }

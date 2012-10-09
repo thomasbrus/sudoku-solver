@@ -7,26 +7,26 @@ import Data.Maybe
 import Data.List
 
 findCandidates :: Sudoku -> Int -> Int -> [Char]
-findCandidates rs i j | isTaken rs i j  = ""
-                      | otherwise       = filter ((isAllowed') rs i j) (allowedChars rs)
+findCandidates su i j | isTaken su i j  = ""
+                      | otherwise       = filter ((isAllowed') su i j) (allowedChars su)
 
 step :: Sudoku -> (Sudoku -> [[(Char, String)]]) -> Sudoku
-step rs f | isNothing m = rs
+step su f | isNothing m = su
           | isJust m    = do
             let m' = fromJust m
-            let i = div m' (rowCount rs)
-            let j = mod m' (columnCount rs)
+            let i = div m' (rowCount su)
+            let j = mod m' (columnCount su)
             let (_, cs) = rcs !! m'
-            update rs i j (head cs)
+            update su i j (head cs)
           where
-            rcs = concat (f rs)
+            rcs = concat (f su)
             m = findIndex (\(s, cs) -> length cs == 1) rcs
 
 run :: Sudoku -> (Sudoku -> [[(Char, String)]]) -> Sudoku
-run rs f  | outcome /= rs = run outcome f
+run su f  | outcome /= su = run outcome f
           | otherwise     = outcome
           where
-            outcome = map (\r -> (map resolve r)) (f rs)
+            outcome = map (\r -> (map resolve r)) (f su)
             resolve (s, cs) | length cs == 1  = head cs
                             | otherwise       = s
 

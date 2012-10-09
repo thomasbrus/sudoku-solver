@@ -18,7 +18,7 @@ simpleSudoku =
   , "9.8......" ]
 
 resolveAllCandidates :: Sudoku -> [[(Char, String)]]
-resolveAllCandidates rs = mapWithIndeces rs (\i j -> (rs !! i !! j, findCandidates rs i j))
+resolveAllCandidates su = mapWithIndeces su (\i j -> (su !! i !! j, findCandidates su i j))
 
 solve :: Sudoku -> Sudoku
-solve rs = run rs resolveAllCandidates
+solve su = run su resolveAllCandidates

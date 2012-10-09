@@ -96,68 +96,66 @@ empty12x12Sudoku =
   ]
 
 
--- TODO rename rs to su
-
 rowCount :: Sudoku -> Int
-rowCount rs = length rs
+rowCount su = length su
 
 columnCount :: Sudoku -> Int
-columnCount rs = length $ head rs
+columnCount su = length $ head su
 
 isTaken :: Sudoku -> Int -> Int -> Bool
-isTaken rs i j = isDigit $ rs !! i !! j
+isTaken su i j = isDigit $ su !! i !! j
 
 isInRow :: Sudoku -> Int -> Char -> Bool
-isInRow rs i s = elem s (rs !! i)
+isInRow su i s = elem s (su !! i)
 
 blockHeight :: Sudoku -> Int
-blockHeight rs = floor $ sqrt $ fromIntegral $ rowCount rs
+blockHeight su = floor $ sqrt $ fromIntegral $ rowCount su
 
 blockWidth :: Sudoku -> Int
-blockWidth rs = ceiling $ sqrt $ fromIntegral $ columnCount rs
+blockWidth su = ceiling $ sqrt $ fromIntegral $ columnCount su
 
 findBlock :: Sudoku -> Int -> Int -> [[Char]]
-findBlock rs i j  = map ((take w) . (drop j')) (take h $ drop i' rs)
+findBlock su i j  = map ((take w) . (drop j')) (take h $ drop i' su)
                   where
-                    h  = blockHeight rs
-                    w  = blockWidth rs
+                    h  = blockHeight su
+                    w  = blockWidth su
                     i' = (div i h) * h
                     j' = (div j w) * w
 
 isInBlock :: Sudoku -> Int -> Int -> Char -> Bool
-isInBlock rs i j c  = let block = concat $ findBlock rs i j in
+isInBlock su i j c  = let block = concat $ findBlock su i j in
                       elem c block
 
 isAllowed :: Sudoku -> Int -> Int -> Char -> Bool
-isAllowed rs i j c  = isValidChar rs c &&                      
-                      not (isInRow rs i c) &&
-                      not (isInRow (transpose rs) j c) &&
-                      not (isInBlock rs i j c)
+isAllowed su i j c  = isValidChar su c &&                      
+                      not (isInRow su i c) &&
+                      not (isInRow (transpose su) j c) &&
+                      not (isInBlock su i j c)
 
 isAllowed' :: Sudoku -> Int -> Int -> Char -> Bool
-isAllowed' rs i j c = isAllowed rs i j c && not (isTaken rs i j)
+isAllowed' su i j c = isAllowed su i j c && not (isTaken su i j)
 
 allowedChars :: Sudoku -> String
 allowedChars su = take (columnCount su) "123456789ABCDEFG"
 
 isValidChar :: Sudoku -> Char -> Bool
-isValidChar rs c = elem c (allowedChars rs)
+isValidChar su c = elem c (allowedChars su)
 
 isValid :: Sudoku -> Bool
-isValid rs  = all (==True) $ concat (mapWithIndeces rs f)
+isValid su  = all (==True) $ concat (mapWithIndeces su f)
             where
-              rs' i j = update rs i j '.'
-              f i j   = isAllowed' (rs' i j) i j (rs !! i !! j)
+              su' i j = update su i j '.'
+              f i j   = isAllowed' (su' i j) i j (su !! i !! j)
 
 update :: Sudoku -> Int -> Int -> Char -> Sudoku
-update rs i j c = mapWithIndeces rs f
+update su i j c = mapWithIndeces su f
                 where f i' j' | i' == i && j == j' = c
-                              | otherwise = rs !! i' !! j'
+                              | otherwise = su !! i' !! j'
 
 mapWithIndeces :: Sudoku -> (Int -> Int -> b) -> [[b]]
-mapWithIndeces rs f = let (r, c) = (rowCount rs - 1, columnCount rs - 1) in
+mapWithIndeces su f = let (r, c) = (rowCount su - 1, columnCount su - 1) in
                       map (\i -> (map (f i) [0..c])) [0..r]
 
 output :: Sudoku -> IO ()
-output rs = mapM_ putStrLn rs
+output su = mapM_ putStrLn su
 

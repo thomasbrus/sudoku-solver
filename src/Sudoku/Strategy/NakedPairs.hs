@@ -7,41 +7,41 @@ import Sudoku
 import Sudoku.Strategy
 
 haveUnitInCommon :: Sudoku -> (Int, Int) -> (Int, Int) -> Bool
-haveUnitInCommon rs (i, j) (i', j') = i == i' || j == j' || findBlock rs i j == findBlock rs i' j'
+haveUnitInCommon su (i, j) (i', j') = i == i' || j == j' || findBlock su i j == findBlock su i' j'
 
 nakedPairs :: Sudoku -> [(String, (Int, Int), (Int, Int))]
-nakedPairs rs = map (\[(a, b, cs), (c, d, _)] -> (cs, (a, b), (c, d))) (filter (\x -> length x == 2) css)
+nakedPairs su = map (\[(a, b, cs), (c, d, _)] -> (cs, (a, b), (c, d))) (filter (\x -> length x == 2) css)
     where
       f (i, j, cs)                = length cs == 2
       s (_, _, c) (_, _, c')      = compare c c'
-      g (i, j, cs) (i', j', cs')  = cs == cs' && haveUnitInCommon rs (i, j) (i', j')
-      css = groupBy g $ sortBy s $ filter f $ allCandidates rs
+      g (i, j, cs) (i', j', cs')  = cs == cs' && haveUnitInCommon su (i, j) (i', j')
+      css = groupBy g $ sortBy s $ filter f $ allCandidates su
 
 findExcludableCandidates :: Sudoku -> Int -> Int -> [Char]
-findExcludableCandidates rs i j = concat (map (\(cs, _, _) -> cs) es)
+findExcludableCandidates su i j = concat (map (\(cs, _, _) -> cs) es)
                                   where
-                                    es = filter (\(_, ab, cd) -> haveUnitInCommon rs (i, j) ab &&  haveUnitInCommon rs (i, j) cd) (nakedPairs rs)
+                                    es = filter (\(_, ab, cd) -> haveUnitInCommon su (i, j) ab &&  haveUnitInCommon su (i, j) cd) (nakedPairs su)
 
 candidatePairs :: Sudoku -> [(Int, Int, String)]
-candidatePairs rs = filter (\(i, j, cs) -> length cs == 2) $ allCandidates rs
+candidatePairs su = filter (\(i, j, cs) -> length cs == 2) $ allCandidates su
 
 allCandidates :: Sudoku -> [(Int, Int, String)]
-allCandidates rs  = [ (i, j, findCandidates rs i j) | i<-[0..r], j<-[0..c] ]
+allCandidates su  = [ (i, j, findCandidates su i j) | i<-[0..r], j<-[0..c] ]
                   where
-                    r = rowCount rs - 1
-                    c = columnCount rs - 1
+                    r = rowCount su - 1
+                    c = columnCount su - 1
 
 resolveCandidates :: Sudoku -> Int -> Int -> (Char, String)
-resolveCandidates rs i j  | cs /= es = (s, cs \\ es)
-                          | otherwise = (rs !! i !! j, cs)
+resolveCandidates su i j  | cs /= es = (s, cs \\ es)
+                          | otherwise = (su !! i !! j, cs)
                           where
-                            s   = rs !! i !! j
-                            cs  = findCandidates rs i j
-                            es  = findExcludableCandidates rs i j
+                            s   = su !! i !! j
+                            cs  = findCandidates su i j
+                            es  = findExcludableCandidates su i j
 
 resolveAllCandidates :: Sudoku -> [[(Char, String)]]
-resolveAllCandidates rs = mapWithIndeces rs (\i j -> resolveCandidates rs i j)
+resolveAllCandidates su = mapWithIndeces su (\i j -> resolveCandidates su i j)
 
 solve :: Sudoku -> Sudoku
-solve rs = run rs resolveAllCandidates
+solve su = run su resolveAllCandidates
 
