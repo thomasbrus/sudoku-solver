@@ -46,6 +46,21 @@ exampleSudoku4 =
   , ".1.."  
   ]
 
+exampleSudoku5 =
+  [ "...1..4.7..8"
+  , ".4...1...B.2"
+  , "..5.A..3.4.."
+  , ".24.7B...6C."
+  , "A......8.2.5"
+  , "...C.6..4.B."
+  , ".9.4..6.B..."
+  , "7.8.2......1"
+  , ".16...5B.32."
+  , "..1.3..2.A.."
+  , "4.7...A...6."
+  , "5..8.4..3..."
+  ]
+
 empty4x4Sudoku =
   [ "...."
   , "...."
@@ -93,11 +108,12 @@ isInRow :: Sudoku -> Int -> Char -> Bool
 isInRow rs i s = elem s (rs !! i)
 
 findBlock :: Sudoku -> Int -> Int -> [[Char]]
-findBlock rs i j  = map ((take d) . (drop j')) (take d $ drop i' rs)
+findBlock rs i j  = map ((take w) . (drop j')) (take h $ drop i' rs)
                   where
-                    d  = floor $ sqrt $ fromIntegral $ columnCount rs
-                    i' = (div i d) * d
-                    j' = (div j d) * d
+                    h  = floor $ sqrt $ fromIntegral $ rowCount rs
+                    w  = ceiling $ sqrt $ fromIntegral $ columnCount rs
+                    i' = (div i h) * h
+                    j' = (div j w) * w
 
 isInBlock :: Sudoku -> Int -> Int -> Char -> Bool
 isInBlock rs i j s  = let block = concat $ findBlock rs i j in

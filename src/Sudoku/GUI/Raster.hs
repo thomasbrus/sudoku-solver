@@ -12,6 +12,9 @@ handleEvents s e = (s, [])
 size = 540.0
 borderColor = makeColor 1 1 1 0.5
 
+-- TODO indicate blocks by a thick line
+-- TODO print allow values (in italics)
+
 draw :: State -> Input -> Picture
 draw s e = Translate (-100) 0 $ Pictures
   -- TODO Green border if isValid
