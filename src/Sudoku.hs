@@ -143,8 +143,8 @@ allowedChars su = take (columnCount su) "123456789ABCDEFG"
 isValidChar :: Sudoku -> Char -> Bool
 isValidChar rs c = elem c (allowedChars rs)
 
-update :: Sudoku -> Char -> Int -> Int -> Sudoku
-update rs c i j = mapWithIndeces rs f
+update :: Sudoku -> Int -> Int -> Char -> Sudoku
+update rs i j c = mapWithIndeces rs f
                 where f i' j' | i' == i && j == j' = c
                               | otherwise = rs !! i' !! j'
 

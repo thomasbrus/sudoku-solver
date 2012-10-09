@@ -56,7 +56,7 @@ handleEvents state@(State {stage="solver",selectedCell=sc,sudoku=su,dim=d,..}) (
           not (isAllowed su row column c)
         = su
         | isJust sc
-        = (update (su) c (fst $ fromJust sc) (snd $ fromJust sc))
+        = (update (su) (fst $ fromJust sc) (snd $ fromJust sc)) c
     s'  | su == su'
         = state { selectedCell = Nothing, sudoku = su', invalidCell = sc }
         | otherwise
