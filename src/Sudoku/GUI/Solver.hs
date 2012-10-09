@@ -8,10 +8,10 @@ import qualified Sudoku.GUI.Button as Btn
 import qualified Sudoku.GUI.Raster as Raster
 
 buttons =
-  [ Btn.Rectangular (290, (-240), 190, 60) "Go Back" (108, 21) (greyN 0.5)
-  , Btn.Rectangular (290, (-160), 190, 60) "Clear All" (100, 21) (dark red)
+  [ Btn.Rectangular (290, (-160), 190, 60) "Go Back" (108, 21) (greyN 0.5)
+  , Btn.Rectangular (290, (-240), 190, 60) "Clear All" (100, 21) (dark red)
   , Btn.Rectangular (290, (240), 190, 60) "Next Step" (121, 21) (dark green)
-  -- "Load Example"
+  , Btn.Rectangular (290, (160), 190, 60) "Load Sample" (160, 21) (greyN 0.5)
   ]
 
 draw :: State -> Input -> Picture
