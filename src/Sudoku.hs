@@ -95,6 +95,9 @@ empty12x12Sudoku =
   , "............"
   ]
 
+
+-- TODO rename rs to su
+
 rowCount :: Sudoku -> Int
 rowCount rs = length rs
 
@@ -107,11 +110,17 @@ isTaken rs i j = isDigit $ rs !! i !! j
 isInRow :: Sudoku -> Int -> Char -> Bool
 isInRow rs i s = elem s (rs !! i)
 
+blockHeight :: Sudoku -> Int
+blockHeight rs = floor $ sqrt $ fromIntegral $ rowCount rs
+
+blockWidth :: Sudoku -> Int
+blockWidth rs = ceiling $ sqrt $ fromIntegral $ columnCount rs
+
 findBlock :: Sudoku -> Int -> Int -> [[Char]]
 findBlock rs i j  = map ((take w) . (drop j')) (take h $ drop i' rs)
                   where
-                    h  = floor $ sqrt $ fromIntegral $ rowCount rs
-                    w  = ceiling $ sqrt $ fromIntegral $ columnCount rs
+                    h  = blockHeight rs
+                    w  = blockWidth rs
                     i' = (div i h) * h
                     j' = (div j w) * w
 

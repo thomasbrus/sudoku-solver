@@ -55,7 +55,7 @@ handleEvents state@(State {stage="solver",selectedCell=sc,sudoku=su,dim=d,..}) (
           notElem [c] (map show [1..d])
         = su
         | isJust sc
-        = (updateCell (su) c (fst $ fromJust sc) (snd $ fromJust sc))
+        = (update (su) c (fst $ fromJust sc) (snd $ fromJust sc))
     s'  | su == su'
         = state { selectedCell = Nothing, sudoku = su', invalidCell = sc }
         | otherwise
