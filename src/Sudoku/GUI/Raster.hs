@@ -38,8 +38,8 @@ drawCell s (MouseMotion (mx, my)) i j
   | mx > x - (size / 2) - 100 &&
     mx < x - (size / 2) + cellSize - 100 &&
     my > y - (size / 2) &&
-    my < y - (size / 2) + cellSize &&
-    not (isTaken (sudoku s) (dim s - j - 1) i)
+    my < y - (size / 2) + cellSize
+    -- not (isTaken (sudoku s) (dim s - j - 1) i)
   = Translate x y $ Pictures
     [ Color violet $ rectangleWire (cellSize + 2) (cellSize + 2)
     , Color borderColor $ rectangleWire cellSize cellSize
@@ -55,7 +55,7 @@ drawCell s (MouseMotion (mx, my)) i j
 drawCell state@(State {invalidCell=sc,dim=d,sudoku=su}) _ i j
   | isJust sc && fromJust sc == (d - j - 1, i)
   = Translate (i' * cellSize) (j' * cellSize) $ Pictures
-    [ Color (makeColor 1 0 0 0.2) $ rectangleSolid (cellSize - 2) (cellSize - 2)
+    [ Color (dark (makeColor 1 0 0 0.5)) $ rectangleSolid (cellSize - 2) (cellSize - 2)
     , Translate (-35 * scale) (-50 * scale) $ Color white $ Scale scale scale $ Text "X"
     ]
   | otherwise
@@ -92,8 +92,8 @@ drawHorizontalDivider s e i = let cellSize = (size / fromIntegral (dim s)) in
   Translate 0 ((-size / 2) + (cellSize * fromIntegral i)) $ Color dividerColor $ rectangleSolid size borderWidth
 
 showCell :: Sudoku -> Int -> Int -> String
-showCell su i j | elem c "123456789" = [c]
-                | otherwise = ""
+showCell su i j | isValidChar su c  = [c]
+                | otherwise         = ""
                 where c = su !! i !! j
 
 calculateCell :: Float -> Float -> Int -> Maybe (Int, Int)

@@ -30,14 +30,16 @@ handleEvents state@(State {stage="menu",..}) (MouseUp (mx, my))
 
 handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my))
   | Btn.inBoundary mx my (Solver.buttons !! 0)
-  = f $ state { stage = "menu", mousePressed = False, invalidCell = Nothing }
+  = f $ state { stage = "menu", mousePressed = False }
   | Btn.inBoundary mx my (Solver.buttons !! 1)
   = f $ state { sudoku = (es d), mousePressed = False }
   | Btn.inBoundary mx my (Solver.buttons !! 2)
   = f $ state { sudoku = (ns d), mousePressed = False }
-  | isJust cell && not (isTaken su (fst $ fromJust cell) (snd $ fromJust cell))
-  = (state { selectedCell = cell, mousePressed = False, invalidCell = Nothing }, [GraphPrompt ("Enter a number", "Range (0..9)")])
+  | isJust cell
+  = (state { selectedCell = cell, mousePressed = False }, [GraphPrompt ("Enter a number", hint)])
   where
+    range = allowedChars su
+    hint = "Range (" ++ (show $ head range) ++ ".." ++ (show $ last range) ++ ")"
     cell = Raster.calculateCell mx my d
     f s = (s, redraw s $ MouseUp (mx, my))
     ns d = step su resolveAllCandidates
@@ -51,8 +53,7 @@ handleEvents state@(State {stage="solver",selectedCell=sc,sudoku=su,dim=d,..}) (
     c = head n
     (row, column) = fromJust sc
     su' | isNothing sc ||
-          not (isAllowed su row column c) ||
-          notElem [c] (map show [1..d])
+          not (isAllowed su row column c)
         = su
         | isJust sc
         = (update (su) c (fst $ fromJust sc) (snd $ fromJust sc))
@@ -65,7 +66,7 @@ handleEvents s (MouseMotion (mx, my))
   = (s, redraw s $ MouseMotion (mx, my))
 
 handleEvents s (MouseDown (mx, my)) =
-  let s' = s { mousePressed = True }
+  let s' = s { mousePressed = True, invalidCell = Nothing }
   in (s', redraw s' $ MouseDown (mx, my))
 
 handleEvents s (MouseUp (mx, my)) =

@@ -6,7 +6,7 @@ import Data.Char
 
 findCandidates :: Sudoku -> Int -> Int -> [Char]
 findCandidates rs i j | isTaken rs i j  = ""
-                      | otherwise       = filter ((isAllowed) rs i j) (allowedChars rs)
+                      | otherwise       = filter ((isAllowed') rs i j) (allowedChars rs)
 
 step :: Sudoku -> (Sudoku -> [[(Char, String)]]) -> Sudoku
 step rs f = map (\r -> (map resolve r)) (f rs)

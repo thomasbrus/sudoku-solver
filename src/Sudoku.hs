@@ -125,17 +125,23 @@ findBlock rs i j  = map ((take w) . (drop j')) (take h $ drop i' rs)
                     j' = (div j w) * w
 
 isInBlock :: Sudoku -> Int -> Int -> Char -> Bool
-isInBlock rs i j s  = let block = concat $ findBlock rs i j in
-                      elem s block
+isInBlock rs i j c  = let block = concat $ findBlock rs i j in
+                      elem c block
 
 isAllowed :: Sudoku -> Int -> Int -> Char -> Bool
-isAllowed rs i j s  = not (isTaken rs i j) &&
-                      not (isInRow rs i s) &&
-                      not (isInRow (transpose rs) j s) &&
-                      not (isInBlock rs i j s)
+isAllowed rs i j c  = isValidChar rs c &&                      
+                      not (isInRow rs i c) &&
+                      not (isInRow (transpose rs) j c) &&
+                      not (isInBlock rs i j c)
+
+isAllowed' :: Sudoku -> Int -> Int -> Char -> Bool
+isAllowed' rs i j c = isAllowed rs i j c && not (isTaken rs i j)
 
 allowedChars :: Sudoku -> String
 allowedChars su = take (columnCount su) "123456789ABCDEFG"
+
+isValidChar :: Sudoku -> Char -> Bool
+isValidChar rs c = elem c (allowedChars rs)
 
 update :: Sudoku -> Char -> Int -> Int -> Sudoku
 update rs c i j = mapWithIndeces rs f
