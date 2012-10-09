@@ -17,26 +17,23 @@ import qualified Sudoku.GUI.Raster as Raster
 
 handleEvents state@(State {stage="menu",..}) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Menu.buttons !! 0)
-  = f $ state { stage = "solver", sudoku = empty4x4Sudoku, dim = 4, mousePressed = False }
+  = f $ restoreState state { stage = "solver", sudoku = empty4x4Sudoku, dim = 4 }
   | Btn.inBoundary mx my (Menu.buttons !! 1)
-  = f $ state { stage = "solver", sudoku = exampleSudoku1, dim = 9, mousePressed = False }
+  = f $ restoreState state { stage = "solver", sudoku = exampleSudoku1, dim = 9 }
   | Btn.inBoundary mx my (Menu.buttons !! 2)
-  = f $ state { stage = "solver", sudoku = empty12x12Sudoku, dim = 12, mousePressed = False }
+  = f $ restoreState state { stage = "solver", sudoku = empty12x12Sudoku, dim = 12 }
   where
     f s = (s, redraw s $ MouseUp (mx, my))
 
--- TODO restoreState { ... }
--- restoreState = .. mousePressed = False
-
 handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my))
   | Btn.inBoundary mx my (Solver.buttons !! 0)
-  = f $ state { stage = "menu", mousePressed = False }
+  = f $ restoreState state { stage = "menu" }
   | Btn.inBoundary mx my (Solver.buttons !! 1)
-  = f $ state { sudoku = (es d), mousePressed = False }
+  = f $ restoreState state { sudoku = (es d) }
   | Btn.inBoundary mx my (Solver.buttons !! 2)
-  = f $ state { sudoku = (ns d), mousePressed = False }
+  = f $ restoreState state { sudoku = (ns d) }
   | isJust cell
-  = (state { selectedCell = cell, mousePressed = False }, [GraphPrompt ("Enter a number", hint)])
+  = (restoreState state { selectedCell = cell }, [GraphPrompt ("Enter a number", hint)])
   where
     range = allowedChars su
     hint = "Range (" ++ (show $ head range) ++ ".." ++ (show $ last range) ++ ")"
@@ -76,12 +73,14 @@ handleEvents s (MouseUp (mx, my)) =
 
 handleEvents s _ = (s, [])
 
+
+restoreState :: State -> State
+restoreState s = s { mousePressed = False }
+
 redraw :: State -> Input -> [Output]
 redraw s e
   | stage s == "menu"
   = [DrawOnBuffer True, ScreenClear, DrawPicture $ Menu.draw s e]
   | stage s == "solver"
   = [DrawOnBuffer True, ScreenClear, DrawPicture $ Solver.draw s e]
-
-
 

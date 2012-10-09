@@ -4,26 +4,25 @@ import Prelude
 import Data.Maybe
 import FPPrac.Events hiding (Button)
 import FPPrac.Graphics hiding (dim)
+import qualified FPPrac.Graphics as Gfx (dim)
 import Sudoku.GUI.State
 import Sudoku
 
 handleEvents s e = (s, [])
 
 size = 540.0
-borderColor = makeColor 1 1 1 0.5
-dividerColor = violet
-borderWidth = 2
-
--- TODO indicate blocks by a thick line
--- TODO print allow values (in italics)
--- TODO green border if isValid
--- TODO let all cells be changeable
+cellColor = makeColor 1 1 1 0.5
+frameColor = white
+invalidCellColor = Gfx.dim (makeColor 1 0 0 0.5)
+gridLineWidth = 2
+gridLineColor s | isValid (sudoku s) = Gfx.dim green
+                | otherwise = violet
 
 draw :: State -> Input -> Picture
 draw s e = Translate (-100) 0 $ Pictures
-  [ drawVerticalDividers s e
-  , drawHorizontalDividers s e
-  , drawFrame s e
+  [ drawFrame s e
+  , drawVerticalGridLines s e
+  , drawHorizontalGridLines s e
   , Translate shift shift $ drawCells s e
   ]
   where
@@ -39,10 +38,10 @@ drawCell s (MouseMotion (mx, my)) i j
     mx < x - (size / 2) + cellSize - 100 &&
     my > y - (size / 2) &&
     my < y - (size / 2) + cellSize
-    -- not (isTaken (sudoku s) (dim s - j - 1) i)
   = Translate x y $ Pictures
     [ Color violet $ rectangleWire (cellSize + 2) (cellSize + 2)
-    , Color borderColor $ rectangleWire cellSize cellSize
+    , Color cellColor $ rectangleWire cellSize cellSize
+    -- TODO: not (isTaken (sudoku s) (dim s - j - 1) i)
     , Translate (-35 * scale) (-50 * scale) $ Color white $ Scale scale scale $ Text "..."
     ]
   where
@@ -55,12 +54,12 @@ drawCell s (MouseMotion (mx, my)) i j
 drawCell state@(State {invalidCell=sc,dim=d,sudoku=su}) _ i j
   | isJust sc && fromJust sc == (d - j - 1, i)
   = Translate (i' * cellSize) (j' * cellSize) $ Pictures
-    [ Color (dark (makeColor 1 0 0 0.5)) $ rectangleSolid (cellSize - 2) (cellSize - 2)
+    [ Color invalidCellColor $ rectangleSolid (cellSize - 4) (cellSize - 4)
     , Translate (-35 * scale) (-50 * scale) $ Color white $ Scale scale scale $ Text "X"
     ]
   | otherwise
   = Translate (i' * cellSize) (j' * cellSize) $ Pictures
-    [ Color borderColor $ rectangleWire cellSize cellSize
+    [ Color cellColor $ rectangleWire cellSize cellSize
     , Translate (-35 * scale) (-50 * scale) $ Color (greyN 0.75) $ Scale scale scale $ Text text
     ]
   where
@@ -69,27 +68,26 @@ drawCell state@(State {invalidCell=sc,dim=d,sudoku=su}) _ i j
     text            = showCell su (d - j - 1) i
     scale           = 2 / dim'
 
-
-drawFrame :: State -> Input -> Picture
-drawFrame s i = Color violet $ rectangleWire (size + borderWidth) (size + borderWidth)
-
-drawVerticalDividers :: State -> Input -> Picture
-drawVerticalDividers s e = Pictures
-  [ drawVerticalDivider s e i | i<-(filter (\x -> mod x bw == 0) [1..(dim s)]) ]
+drawVerticalGridLines :: State -> Input -> Picture
+drawVerticalGridLines s e = Pictures
+  [ drawVerticalGridLine s e i | i<-(filter (\x -> mod x bw == 0) [0..(dim s)]) ]
   where bw = blockWidth (sudoku s)
   
-drawVerticalDivider :: State -> Input -> Int -> Picture
-drawVerticalDivider s e i = let cellSize = (size / fromIntegral (dim s)) in
-  Translate ((-size / 2) + (cellSize * fromIntegral i)) 0 $ Color dividerColor $ rectangleSolid borderWidth size
+drawVerticalGridLine :: State -> Input -> Int -> Picture
+drawVerticalGridLine s e i = let cellSize = (size / fromIntegral (dim s)) in
+  Translate ((-size / 2) + (cellSize * fromIntegral i)) 0 $ Color (gridLineColor s) $ rectangleSolid gridLineWidth size
 
-drawHorizontalDividers :: State -> Input -> Picture
-drawHorizontalDividers s e = Pictures
-  [ drawHorizontalDivider s e i | i<-(filter (\x -> mod x bh == 0) [1..(dim s)]) ]
+drawHorizontalGridLines :: State -> Input -> Picture
+drawHorizontalGridLines s e = Pictures
+  [ drawHorizontalGridLine s e i | i<-(filter (\x -> mod x bh == 0) [0..(dim s)]) ]
   where bh = blockHeight (sudoku s)
 
-drawHorizontalDivider :: State -> Input -> Int -> Picture
-drawHorizontalDivider s e i = let cellSize = (size / fromIntegral (dim s)) in
-  Translate 0 ((-size / 2) + (cellSize * fromIntegral i)) $ Color dividerColor $ rectangleSolid size borderWidth
+drawHorizontalGridLine :: State -> Input -> Int -> Picture
+drawHorizontalGridLine s e i = let cellSize = (size / fromIntegral (dim s)) in
+  Translate 0 ((-size / 2) + (cellSize * fromIntegral i)) $ Color (gridLineColor s) $ rectangleSolid size gridLineWidth
+
+drawFrame :: State -> Input -> Picture
+drawFrame s i = Color cellColor $ rectangleWire (size - 2) (size - 2)
 
 showCell :: Sudoku -> Int -> Int -> String
 showCell su i j | isValidChar su c  = [c]
