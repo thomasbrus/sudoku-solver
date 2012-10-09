@@ -26,7 +26,10 @@ candidatePairs :: Sudoku -> [(Int, Int, String)]
 candidatePairs rs = filter (\(i, j, cs) -> length cs == 2) $ allCandidates rs
 
 allCandidates :: Sudoku -> [(Int, Int, String)]
-allCandidates rs  = [ (i, j, findCandidates rs i j) | i<-[0..8], j<-[0..8] ]
+allCandidates rs  = [ (i, j, findCandidates rs i j) | i<-[0..r], j<-[0..c] ]
+                  where
+                    r = rowCount rs - 1
+                    c = columnCount rs - 1
 
 resolveCandidates :: Sudoku -> Int -> Int -> (Char, String)
 resolveCandidates rs i j  | cs /= es = (s, cs \\ es)

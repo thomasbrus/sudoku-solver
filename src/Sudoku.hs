@@ -39,6 +39,13 @@ exampleSudoku3 =
   , "2......15"
   , ".1..5..2." ]
 
+exampleSudoku4 =
+  [ "..4."
+  , "1..."
+  , "...3"
+  , ".1.."  
+  ]
+
 empty4x4Sudoku =
   [ "...."
   , "...."
@@ -86,14 +93,15 @@ isInRow :: Sudoku -> Int -> Char -> Bool
 isInRow rs i s = elem s (rs !! i)
 
 findBlock :: Sudoku -> Int -> Int -> [[Char]]
-findBlock rs i j  = map ((take 3) . (drop j')) (take 3 $ drop i' rs)
+findBlock rs i j  = map ((take d) . (drop j')) (take d $ drop i' rs)
                   where
-                    i' = (div i 3) * 3
-                    j' = (div j 3) * 3
+                    d  = floor $ sqrt $ fromIntegral $ columnCount rs
+                    i' = (div i d) * d
+                    j' = (div j d) * d
 
 isInBlock :: Sudoku -> Int -> Int -> Char -> Bool
-isInBlock rs i j s  = let symbols = concat $ findBlock rs i j in
-                      elem s symbols
+isInBlock rs i j s  = let block = concat $ findBlock rs i j in
+                      elem s block
 
 isAllowed :: Sudoku -> Int -> Int -> Char -> Bool
 isAllowed rs i j s  = not (isTaken rs i j) &&
@@ -101,12 +109,17 @@ isAllowed rs i j s  = not (isTaken rs i j) &&
                       not (isInRow (transpose rs) j s) &&
                       not (isInBlock rs i j s)
 
+allowedChars :: Sudoku -> String
+allowedChars su = take (columnCount su) "123456789ABCDEFGH"
+
+-- TODO rename to 'update'
+
 updateCell :: Sudoku -> Char -> Int -> Int -> Sudoku
 updateCell rs c i j = mapWithIndeces rs f
-                    where
-                      f _ i' j' | i' == i && j == j' = c
-                                | otherwise = rs !! i' !! j'
+                    where f _ i' j' | i' == i && j == j' = c
+                                    | otherwise = rs !! i' !! j'
 
+-- TODO remove rs from f rs i j
 mapWithIndeces :: Sudoku -> (Sudoku -> Int -> Int -> b) -> [[b]]
 mapWithIndeces rs f = let (rows, columns) = (rowCount rs, columnCount rs) in
                       map (\i -> (map (\j -> f rs i j) [0..(columns - 1)])) [0..(rows - 1)]
