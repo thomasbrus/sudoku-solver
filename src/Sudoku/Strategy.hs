@@ -10,12 +10,6 @@ findCandidates :: Sudoku -> Int -> Int -> [Char]
 findCandidates rs i j | isTaken rs i j  = ""
                       | otherwise       = filter ((isAllowed') rs i j) (allowedChars rs)
 
---step :: Sudoku -> (Sudoku -> [[(Char, String)]]) -> Sudoku
---step rs f = map (\r -> (map resolve r)) (f rs)
---          where
---            resolve (s, cs) | length cs == 1  = head cs
---                            | otherwise       = s
-
 step :: Sudoku -> (Sudoku -> [[(Char, String)]]) -> Sudoku
 step rs f | isNothing m = rs
           | isJust m    = do
