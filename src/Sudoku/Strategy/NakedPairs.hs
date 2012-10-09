@@ -40,7 +40,7 @@ resolveCandidates rs i j  | cs /= es = (s, cs \\ es)
                             es  = findExcludableCandidates rs i j
 
 resolveAllCandidates :: Sudoku -> [[(Char, String)]]
-resolveAllCandidates rs = mapWithIndeces rs (\rs i j -> resolveCandidates rs i j)
+resolveAllCandidates rs = mapWithIndeces rs (\i j -> resolveCandidates rs i j)
 
 solve :: Sudoku -> Sudoku
 solve rs = run rs resolveAllCandidates

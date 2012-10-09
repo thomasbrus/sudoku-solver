@@ -110,19 +110,16 @@ isAllowed rs i j s  = not (isTaken rs i j) &&
                       not (isInBlock rs i j s)
 
 allowedChars :: Sudoku -> String
-allowedChars su = take (columnCount su) "123456789ABCDEFGH"
+allowedChars su = take (columnCount su) "123456789ABCDEFG"
 
--- TODO rename to 'update'
+update :: Sudoku -> Char -> Int -> Int -> Sudoku
+update rs c i j = mapWithIndeces rs f
+                where f i' j' | i' == i && j == j' = c
+                              | otherwise = rs !! i' !! j'
 
-updateCell :: Sudoku -> Char -> Int -> Int -> Sudoku
-updateCell rs c i j = mapWithIndeces rs f
-                    where f _ i' j' | i' == i && j == j' = c
-                                    | otherwise = rs !! i' !! j'
-
--- TODO remove rs from f rs i j
-mapWithIndeces :: Sudoku -> (Sudoku -> Int -> Int -> b) -> [[b]]
-mapWithIndeces rs f = let (rows, columns) = (rowCount rs, columnCount rs) in
-                      map (\i -> (map (\j -> f rs i j) [0..(columns - 1)])) [0..(rows - 1)]
+mapWithIndeces :: Sudoku -> (Int -> Int -> b) -> [[b]]
+mapWithIndeces rs f = let (r, c) = (rowCount rs - 1, columnCount rs - 1) in
+                      map (\i -> (map (f i) [0..c])) [0..r]
 
 output :: Sudoku -> IO ()
 output rs = mapM_ putStrLn rs
