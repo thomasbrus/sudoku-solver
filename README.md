@@ -1,6 +1,16 @@
 # Sudoku Solver
 
-A sudoku solver in Haskell. [Download here](http://github.com/thomasbrus/sudoku-solver).
+A sudoku solver in Haskell. 
+
+## How to install
+
+    $ git clone https://github.com/thomasbrus/sudoku-solver.git
+    $ cd sudoku-solver
+    $ cabal install
+
+Run with:
+
+    $ ~/bin/sudoku-solver
 
 ## Screenshots
 
