@@ -9,7 +9,7 @@ import FPPrac.Graphics hiding (dim)
 import Sudoku
 import Sudoku.Examples
 import Sudoku.Strategy
-import Sudoku.Strategy.NakedSingle
+import Sudoku.Strategy.HiddenSingle
 import Sudoku.GUI.State
 import qualified Sudoku.GUI.Button as Btn
 import qualified Sudoku.GUI.Menu as Menu

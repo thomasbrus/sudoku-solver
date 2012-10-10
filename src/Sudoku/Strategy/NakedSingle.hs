@@ -20,5 +20,3 @@ simpleSudoku =
 resolveAllCandidates :: Sudoku -> [[(Char, String)]]
 resolveAllCandidates su = mapWithIndeces su (\i j -> (su !! i !! j, findCandidates su i j))
 
-solve :: Sudoku -> Sudoku
-solve su = run su resolveAllCandidates

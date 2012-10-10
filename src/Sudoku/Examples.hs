@@ -4,6 +4,18 @@ import Sudoku
 
 -- TODO fix examples (easy/hard) / only hard!?
 
+hiddenSingleSudoku =
+  [ "........."
+  , "...2....."
+  , "........."
+  , "....6...."
+  , "....*...."
+  , "....8...."
+  , "........."
+  , "........."
+  , ".....2..."
+  ]
+
 example4x4Sudoku =
   [ "..4."
   , "1..."

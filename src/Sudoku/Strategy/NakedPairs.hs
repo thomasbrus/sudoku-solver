@@ -42,6 +42,3 @@ resolveCandidates su i j  | cs /= es = (s, cs \\ es)
 resolveAllCandidates :: Sudoku -> [[(Char, String)]]
 resolveAllCandidates su = mapWithIndeces su (\i j -> resolveCandidates su i j)
 
-solve :: Sudoku -> Sudoku
-solve su = run su resolveAllCandidates
-
