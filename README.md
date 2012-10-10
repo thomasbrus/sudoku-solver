@@ -6,7 +6,7 @@ A sudoku solver in Haskell.
 
     $ git clone https://github.com/thomasbrus/sudoku-solver.git
     $ cd sudoku-solver
-    $ cabal install
+    $ cabal install --prefix=$HOME --user
 
 Run with:
 
