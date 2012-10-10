@@ -12,7 +12,7 @@ haveUnitInCommon su (i, j) (i', j') = i == i' || j == j' || findBlock su i j == 
 nakedPairs :: Sudoku -> [(String, (Int, Int), (Int, Int))]
 nakedPairs su = map (\[(a, b, cs), (c, d, _)] -> (cs, (a, b), (c, d))) (filter (\x -> length x == 2) css)
     where
-      f (i, j, cs)                = length cs == 2
+      f (_, _, cs)                = length cs == 2
       s (_, _, c) (_, _, c')      = compare c c'
       g (i, j, cs) (i', j', cs')  = cs == cs' && haveUnitInCommon su (i, j) (i', j')
       css = groupBy g $ sortBy s $ filter f $ allCandidates su
@@ -23,7 +23,7 @@ findExcludableCandidates su i j = concat (map (\(cs, _, _) -> cs) es)
                                     es = filter (\(_, ab, cd) -> haveUnitInCommon su (i, j) ab &&  haveUnitInCommon su (i, j) cd) (nakedPairs su)
 
 candidatePairs :: Sudoku -> [(Int, Int, String)]
-candidatePairs su = filter (\(i, j, cs) -> length cs == 2) $ allCandidates su
+candidatePairs su = filter (\(_, _, cs) -> length cs == 2) $ allCandidates su
 
 allCandidates :: Sudoku -> [(Int, Int, String)]
 allCandidates su  = [ (i, j, findCandidates su i j) | i<-[0..r], j<-[0..c] ]

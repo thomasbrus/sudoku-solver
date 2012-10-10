@@ -6,6 +6,7 @@ import FPPrac.Graphics
 import Sudoku.GUI.State
 import qualified Sudoku.GUI.Button as Btn
 
+buttons :: [Btn.Button]
 buttons =
   [ Btn.Rectangular (-180, -90, 130, 130) "4 x 4" (84, 21) green
   , Btn.Rectangular (0, -90, 130, 130) "6 x 6" (81, 21) yellow

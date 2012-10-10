@@ -8,40 +8,40 @@ import Sudoku.GUI.State
 data Button = Rectangular (Float, Float, Float, Float) String (Float, Float) Color
 
 draw :: State -> Input -> Button -> Picture
-draw s (MouseMotion (mx, my)) (Rectangular (x, y, width, height) text (tw, th) color)
+draw s (MouseMotion (mx, my)) (Rectangular (x, y, width, height) txt (tw, th) clr)
   | inBoundary mx my btn && mousePressed s
   = Pictures
   [ Translate x y $ Color (makeColor 1 1 1 0.02) $ rectangleSolid width height
-  , Translate x y $ Color color $ rectangleWire width height
-  , Translate tx (ty - 2) $ Color color $ Scale 0.2 0.2 $ Text text
+  , Translate x y $ Color clr $ rectangleWire width height
+  , Translate tx (ty - 2) $ Color clr $ Scale 0.2 0.2 $ Text txt
   ]
   | inBoundary mx my btn && not (mousePressed s)
   = Pictures
   [ Translate x y $ Color (makeColor 1 1 1 0.05) $ rectangleSolid width height
-  , Translate x y $ Color color $ rectangleWire width height
-  , Translate tx ty $ Color color $ Scale 0.2 0.2 $ Text text
+  , Translate x y $ Color clr $ rectangleWire width height
+  , Translate tx ty $ Color clr $ Scale 0.2 0.2 $ Text txt
   ]
   where
     tx = x - (tw / 2)
     ty = y - (th / 2)
-    btn = (Rectangular (x, y, width, height) text (tw, th) color)
+    btn = (Rectangular (x, y, width, height) txt (tw, th) clr)
 
-draw s (MouseDown (mx, my)) (Rectangular (x, y, width, height) text (tw, th) color)
+draw s (MouseDown (mx, my)) (Rectangular (x, y, width, height) txt (tw, th) clr)
   | inBoundary mx my btn && mousePressed s
   = Pictures
   [ Translate x y $ Color (makeColor 1 1 1 0.02) $ rectangleSolid width height
-  , Translate x y $ Color color $ rectangleWire width height
-  , Translate tx (ty - 2) $ Color color $ Scale 0.2 0.2 $ Text text
+  , Translate x y $ Color clr $ rectangleWire width height
+  , Translate tx (ty - 2) $ Color clr $ Scale 0.2 0.2 $ Text txt
   ]
   where
     tx = x - (tw / 2)
     ty = y - (th / 2)
-    btn = (Rectangular (x, y, width, height) text (tw, th) color)
+    btn = (Rectangular (x, y, width, height) txt (tw, th) clr)
 
-draw s _ (Rectangular (x, y, width, height) text (tw, th) color)
+draw _ _ (Rectangular (x, y, width, height) txt (tw, th) clr)
   = Pictures
   [ Translate x y $ Color (makeColor 0.8 0.8 0.8 1) $ rectangleWire width height
-  , Translate tx ty $ Color color $ Scale 0.2 0.2 $ Text text
+  , Translate tx ty $ Color clr $ Scale 0.2 0.2 $ Text txt
   ]
   where
     tx = x - (tw / 2)

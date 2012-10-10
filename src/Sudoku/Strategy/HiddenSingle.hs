@@ -3,8 +3,6 @@ module Sudoku.Strategy.HiddenSingle where
 import Prelude
 import Sudoku
 import Sudoku.Strategy
-import Sudoku.Examples
-import Data.Char
 import Data.List
 
 concatRowCandidates :: Sudoku -> Int -> String
@@ -15,7 +13,7 @@ concatColumnCandidates su j = concat [ findCandidates su i j | i<-[0..(rowCount 
 
 concatBlockCandidates :: Sudoku -> Int -> Int -> String
 concatBlockCandidates su i j
-  = concat [ findCandidates su i j | i<-[i'..i''], j<-[j'..j''] ]
+  = concat [ findCandidates su k l | k<-[i'..i''], l<-[j'..j''] ]
   where
     h   = blockHeight su
     w   = blockWidth su
@@ -25,10 +23,10 @@ concatBlockCandidates su i j
     j'' = j' + w - 1
 
 findUniqueRowCandidates :: Sudoku -> Int -> Int -> String
-findUniqueRowCandidates su i j = concat $ filter (\x -> length x == 1) $ group $ sort $ concatRowCandidates su i
+findUniqueRowCandidates su i _ = concat $ filter (\x -> length x == 1) $ group $ sort $ concatRowCandidates su i
 
 findUniqueColumnCandidates :: Sudoku -> Int -> Int -> String
-findUniqueColumnCandidates su i j = concat $ filter (\x -> length x == 1) $ group $ sort $ concatColumnCandidates su j
+findUniqueColumnCandidates su _ j = concat $ filter (\x -> length x == 1) $ group $ sort $ concatColumnCandidates su j
 
 findUniqueBlockCandidates :: Sudoku -> Int -> Int -> String
 findUniqueBlockCandidates su i j = concat $ filter (\x -> length x == 1) $ group $ sort $ concatBlockCandidates su i j

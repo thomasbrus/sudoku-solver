@@ -2,7 +2,6 @@ module Sudoku.Examples where
 
 import Sudoku
 import Prelude
-import Data.List (replicate)
 
 exampleSudoku :: Int -> Sudoku
 

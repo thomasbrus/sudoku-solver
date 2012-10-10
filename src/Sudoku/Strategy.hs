@@ -2,7 +2,6 @@ module Sudoku.Strategy where
 
 import Sudoku
 import Prelude
-import Data.Char
 import Data.Maybe
 import Data.List
 
@@ -24,7 +23,7 @@ findResolvableCell su f
       Just (i, j, head cs)
   where
     rcs = concat (f su)
-    m   = findIndex (\(s, cs) -> length cs == 1) rcs
+    m   = findIndex (\(_, cs) -> length cs == 1) rcs
 
 step :: Sudoku -> [Solver] -> Sudoku
 step su [] = su
