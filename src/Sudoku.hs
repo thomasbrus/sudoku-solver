@@ -66,6 +66,6 @@ mapWithIndeces :: Sudoku -> (Int -> Int -> b) -> [[b]]
 mapWithIndeces su f = let (r, c) = (rowCount su - 1, columnCount su - 1) in
                       map (\i -> (map (f i) [0..c])) [0..r]
 
-output :: Sudoku -> IO ()
-output su = mapM_ putStrLn su
+prettyprint :: Sudoku -> IO ()
+prettyprint su = mapM_ putStrLn su
 

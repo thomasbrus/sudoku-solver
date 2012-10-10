@@ -33,7 +33,7 @@ drawCells :: State -> Input -> Picture
 drawCells s e = Pictures [ drawCell s e i j | i<-[0..(dim s - 1)], j<-[0..(dim s - 1)] ]
 
 drawCell :: State -> Input -> Int -> Int -> Picture
-drawCell s (MouseMotion (mx, my)) i j
+drawCell state@(State {dim=d,sudoku=su}) (MouseMotion (mx, my)) i j
   | mx > x - (size / 2) - 100 &&
     mx < x - (size / 2) + cellSize - 100 &&
     my > y - (size / 2) &&
@@ -41,27 +41,24 @@ drawCell s (MouseMotion (mx, my)) i j
   = Translate x y $ Pictures
     [ Color violet $ rectangleWire (cellSize + 2) (cellSize + 2)
     , Color cellColor $ rectangleWire cellSize cellSize
-    -- TODO: not (isTaken (sudoku s) (dim s - j - 1) i) then show text or not
     , Translate (-35 * scale) (-50 * scale) $ Color white $ Scale scale scale $ Text "..."
     ]
   where
-    [i', j', dim']  = map fromIntegral [i, j, dim s]
+    [i', j', dim']  = map fromIntegral [i, j, d]
     cellSize        = (size / dim')
     x               = (i' * cellSize)
     y               = (j' * cellSize)
-    scale           = 2.5 / dim'
+    scale           = 2 / dim'
 
 drawCell state@(State {invalidCell=sc,dim=d,sudoku=su}) _ i j
-  | isJust sc && fromJust sc == (d - j - 1, i)
-  = Translate (i' * cellSize) (j' * cellSize) $ Pictures
-    [ Color invalidCellColor $ rectangleSolid (cellSize - 4) (cellSize - 4)
-    , Translate (-35 * scale) (-50 * scale) $ Color white $ Scale scale scale $ Text "X"
-    ]
-  | otherwise
-  = Translate (i' * cellSize) (j' * cellSize) $ Pictures
-    [ Color cellColor $ rectangleWire cellSize cellSize
-    , Translate (-35 * scale) (-50 * scale) $ Color (greyN 0.75) $ Scale scale scale $ Text text
-    ]
+  = Translate (i' * cellSize) (j' * cellSize) $ Pictures $ [] ++
+    (if isJust sc && fromJust sc == (d - j - 1, i) then
+      [ Translate (-35 * scale) (-50 * scale) $ Color (Gfx.dim red) $ Scale scale scale $ Text "..." ]
+    else
+      [ Color cellColor $ rectangleWire cellSize cellSize
+      , Translate (-35 * scale) (-50 * scale) $ Color (greyN 0.75) $ Scale scale scale $ Text text
+      ]
+    )
   where
     [i', j', dim']  = map fromIntegral [i, j, d]
     cellSize        = (size / dim')
