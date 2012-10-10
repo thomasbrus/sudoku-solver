@@ -4,15 +4,14 @@ import Prelude
 import FPPrac.Graphics hiding (dim)
 import FPPrac.Events
 import Sudoku
-import Sudoku.Examples (empty9x9Sudoku)
 import Sudoku.GUI.State
 import qualified Sudoku.GUI.Events as Events
 
 initialState = State
   { stage = "menu"
-  , dim = 9
+  , dim = 0
   , mousePressed = False
-  , sudoku = empty9x9Sudoku
+  , sudoku = ["."]
   , selectedCell = Nothing
   , invalidCell = Nothing
   }

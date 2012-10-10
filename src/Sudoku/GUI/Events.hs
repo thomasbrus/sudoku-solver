@@ -20,11 +20,11 @@ import qualified Sudoku.GUI.Raster as Raster
 
 handleEvents state@(State {stage="menu",..}) (MouseUp (mx, my)) 
   | Btn.inBoundary mx my (Menu.buttons !! 0)
-  = f $ restoreState state { stage = "solver", sudoku = empty4x4Sudoku, dim = 4 }
+  = f $ restoreState state { stage = "solver", sudoku = emptySudoku 4, dim = 4 }
   | Btn.inBoundary mx my (Menu.buttons !! 1)
-  = f $ restoreState state { stage = "solver", sudoku = empty6x6Sudoku, dim = 6 }
+  = f $ restoreState state { stage = "solver", sudoku = emptySudoku 6, dim = 6 }
   | Btn.inBoundary mx my (Menu.buttons !! 2)
-  = f $ restoreState state { stage = "solver", sudoku = empty9x9Sudoku, dim = 9 }
+  = f $ restoreState state { stage = "solver", sudoku = emptySudoku 9, dim = 9 }
   where
     f s = (s, redraw s $ MouseUp (mx, my))
 
@@ -45,9 +45,9 @@ handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my)
     cell = Raster.calculateCell mx my d
     f s = (s, redraw s $ MouseUp (mx, my))
     ns d = step su [NS.resolveAllCandidates, HS.resolveAllCandidates, NP.resolveAllCandidates]
-    es d  | d == 4  = empty4x4Sudoku
-          | d == 6  = empty6x6Sudoku
-          | d == 9  = empty9x9Sudoku
+    es d  | d == 4  = emptySudoku 4
+          | d == 6  = emptySudoku 6
+          | d == 9  = emptySudoku 9
     xs d  | d == 4  = example4x4Sudoku
           | d == 6  = example6x6Sudoku
           | d == 9  = example9x9Sudoku          
