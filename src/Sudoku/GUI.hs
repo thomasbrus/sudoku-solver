@@ -1,4 +1,4 @@
-module Sudoku.GUI where
+module Main where
 
 import Prelude
 import FPPrac.Graphics hiding (dim)
