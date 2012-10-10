@@ -8,8 +8,8 @@ import qualified Sudoku.GUI.Button as Btn
 
 buttons =
   [ Btn.Rectangular (-180, -90, 130, 130) "4 x 4" (84, 21) green
-  , Btn.Rectangular (0, -90, 130, 130) "9 x 9" (81, 21) yellow
-  , Btn.Rectangular (180, -90, 130, 130) "12 x 12" (108, 21) red
+  , Btn.Rectangular (0, -90, 130, 130) "6 x 6" (81, 21) yellow
+  , Btn.Rectangular (180, -90, 130, 130) "9 x 9" (81, 21) red
   ]
 
 draw :: State -> Input -> Picture

@@ -10,6 +10,8 @@ findCandidates :: Sudoku -> Int -> Int -> [Char]
 findCandidates su i j | isTaken su i j  = ""
                       | otherwise       = filter ((isAllowed') su i j) (allowedChars su)
 
+-- TODO first nakedsingle, then nakedpairs
+-- TODO implement hiddensingle
 step :: Sudoku -> (Sudoku -> [[(Char, String)]]) -> Sudoku
 step su f | isNothing m = su
           | isJust m    = do

@@ -7,6 +7,7 @@ import Data.Maybe
 import FPPrac.Events
 import FPPrac.Graphics hiding (dim)
 import Sudoku
+import Sudoku.Examples
 import Sudoku.Strategy
 import Sudoku.Strategy.NakedSingle
 import Sudoku.GUI.State
@@ -19,9 +20,9 @@ handleEvents state@(State {stage="menu",..}) (MouseUp (mx, my))
   | Btn.inBoundary mx my (Menu.buttons !! 0)
   = f $ restoreState state { stage = "solver", sudoku = empty4x4Sudoku, dim = 4 }
   | Btn.inBoundary mx my (Menu.buttons !! 1)
-  = f $ restoreState state { stage = "solver", sudoku = exampleSudoku1, dim = 9 }
+  = f $ restoreState state { stage = "solver", sudoku = empty6x6Sudoku, dim = 6 }
   | Btn.inBoundary mx my (Menu.buttons !! 2)
-  = f $ restoreState state { stage = "solver", sudoku = empty12x12Sudoku, dim = 12 }
+  = f $ restoreState state { stage = "solver", sudoku = empty9x9Sudoku, dim = 9 }
   where
     f s = (s, redraw s $ MouseUp (mx, my))
 
@@ -32,6 +33,8 @@ handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my)
   = f $ restoreState state { sudoku = (es d) }
   | Btn.inBoundary mx my (Solver.buttons !! 2)
   = f $ restoreState state { sudoku = (ns d) }
+  | Btn.inBoundary mx my (Solver.buttons !! 3)
+  = f $ restoreState state { sudoku = (xs d) }
   | isJust cell
   = (restoreState state { selectedCell = cell }, [GraphPrompt ("Enter a number", hint)])
   where
@@ -40,9 +43,12 @@ handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my)
     cell = Raster.calculateCell mx my d
     f s = (s, redraw s $ MouseUp (mx, my))
     ns d = step su resolveAllCandidates
-    es d  | d == 4    = empty4x4Sudoku
-          | d == 9    = empty9x9Sudoku
-          | d == 12   = empty12x12Sudoku
+    es d  | d == 4  = empty4x4Sudoku
+          | d == 6  = empty6x6Sudoku
+          | d == 9  = empty9x9Sudoku
+    xs d  | d == 4  = example4x4Sudoku
+          | d == 6  = example6x6Sudoku
+          | d == 9  = example9x9Sudoku          
 
 handleEvents state@(State {stage="solver",selectedCell=sc,sudoku=su,dim=d,..}) (Prompt ("Enter a number", n))
   = (s', redraw s' NoInput)

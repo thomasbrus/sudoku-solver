@@ -9,9 +9,9 @@ import qualified Sudoku.GUI.Button as Btn
 import qualified Sudoku.GUI.Raster as Raster
 
 buttons =
-  [ Btn.Rectangular (290, (-160), 190, 60) "Go Back" (108, 21) (greyN 0.5)
+  [ Btn.Rectangular (290, (-160), 190, 60) "Switch Size" (141, 21) (greyN 0.5)
   , Btn.Rectangular (290, (-240), 190, 60) "Clear All" (100, 21) (Gfx.dim red)
-  , Btn.Rectangular (290, (240), 190, 60) "Next Step" (121, 21) (Gfx.dim green)
+  , Btn.Rectangular (290, (240), 190, 60) "Take Step" (127, 21) (Gfx.dim green)
   , Btn.Rectangular (290, (160), 190, 60) "Load Sample" (160, 21) (greyN 0.5)
   ]
 
