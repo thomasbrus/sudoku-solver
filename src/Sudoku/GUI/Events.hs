@@ -9,7 +9,9 @@ import FPPrac.Graphics hiding (dim)
 import Sudoku
 import Sudoku.Examples
 import Sudoku.Strategy
-import Sudoku.Strategy.HiddenSingle
+import qualified Sudoku.Strategy.HiddenSingle as HS
+import qualified Sudoku.Strategy.NakedSingle as NS
+import qualified Sudoku.Strategy.NakedPairs as NP
 import Sudoku.GUI.State
 import qualified Sudoku.GUI.Button as Btn
 import qualified Sudoku.GUI.Menu as Menu
@@ -42,7 +44,7 @@ handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my)
     hint = "Range (" ++ (show $ head range) ++ ".." ++ (show $ last range) ++ ")"
     cell = Raster.calculateCell mx my d
     f s = (s, redraw s $ MouseUp (mx, my))
-    ns d = step su resolveAllCandidates
+    ns d = step su [NS.resolveAllCandidates, HS.resolveAllCandidates, NP.resolveAllCandidates]
     es d  | d == 4  = empty4x4Sudoku
           | d == 6  = empty6x6Sudoku
           | d == 9  = empty9x9Sudoku

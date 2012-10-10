@@ -41,7 +41,7 @@ drawCell s (MouseMotion (mx, my)) i j
   = Translate x y $ Pictures
     [ Color violet $ rectangleWire (cellSize + 2) (cellSize + 2)
     , Color cellColor $ rectangleWire cellSize cellSize
-    -- TODO: not (isTaken (sudoku s) (dim s - j - 1) i)
+    -- TODO: not (isTaken (sudoku s) (dim s - j - 1) i) then show text or not
     , Translate (-35 * scale) (-50 * scale) $ Color white $ Scale scale scale $ Text "..."
     ]
   where
