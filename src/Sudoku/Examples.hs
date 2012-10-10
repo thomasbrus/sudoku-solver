@@ -4,14 +4,16 @@ import Sudoku
 import Prelude
 import Data.List (replicate)
 
-example4x4Sudoku =
+exampleSudoku :: Int -> Sudoku
+
+exampleSudoku 4 =
   [ "2..."
   , "..1."
   , ".2.."
   , "...4"  
   ]
 
-example6x6Sudoku =
+exampleSudoku 6 =
   [ "3....4"
   , "..43.."
   , ".3..6."
@@ -20,7 +22,7 @@ example6x6Sudoku =
   , "1....2"
   ]
 
-example9x9Sudoku =
+exampleSudoku 9 =
   [ "4...53..."
   , "...294.73"
   , "3...7.5.9"

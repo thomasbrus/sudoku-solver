@@ -32,11 +32,11 @@ handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my)
   | Btn.inBoundary mx my (Solver.buttons !! 0)
   = f $ restoreState state { stage = "menu" }
   | Btn.inBoundary mx my (Solver.buttons !! 1)
-  = f $ restoreState state { sudoku = (es d) }
+  = f $ restoreState state { sudoku = emptySudoku d }
   | Btn.inBoundary mx my (Solver.buttons !! 2)
   = f $ restoreState state { sudoku = (ns d) }
   | Btn.inBoundary mx my (Solver.buttons !! 3)
-  = f $ restoreState state { sudoku = (xs d) }
+  = f $ restoreState state { sudoku = exampleSudoku d }
   | isJust cell
   = (restoreState state { selectedCell = cell }, [GraphPrompt ("Enter a number", hint)])
   where
@@ -45,12 +45,6 @@ handleEvents state@(State {stage="solver",dim=d,sudoku=su,..}) (MouseUp (mx, my)
     cell = Raster.calculateCell mx my d
     f s = (s, redraw s $ MouseUp (mx, my))
     ns d = step su [NS.resolveAllCandidates, HS.resolveAllCandidates, NP.resolveAllCandidates]
-    es d  | d == 4  = emptySudoku 4
-          | d == 6  = emptySudoku 6
-          | d == 9  = emptySudoku 9
-    xs d  | d == 4  = example4x4Sudoku
-          | d == 6  = example6x6Sudoku
-          | d == 9  = example9x9Sudoku          
 
 handleEvents state@(State {stage="solver",selectedCell=sc,sudoku=su,dim=d,..}) (Prompt ("Enter a number", n))
   = (s', redraw s' NoInput)
